@@ -2,76 +2,114 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   const key = process.env.RAPIDAPI_KEY;
-
   if (!key) {
-    return res.status(500).json({
-      error: 'RAPIDAPI_KEY no configurada en Vercel Environment Variables'
-    });
+    return res.status(500).json({ error: 'RAPIDAPI_KEY no configurada en Vercel' });
   }
 
+  const HEADERS = {
+    'x-rapidapi-key': key,
+    'x-rapidapi-host': 'sportapi7.p.rapidapi.com',
+    'Content-Type': 'application/json'
+  };
+
+  // Sports to check for live events (add more in the future)
+  const SPORTS = ['football', 'tennis', 'basketball'];
+
   try {
-    // 1. Any live football match in the world
-    let response = await fetch(
-      `https://api-football-v1.p.rapidapi.com/v3/fixtures?live=all`,
-      { headers: { 'x-rapidapi-key': key, 'x-rapidapi-host': 'api-football-v1.p.rapidapi.com' } }
-    );
-    const data = await response.json();
+    // 1. Try each sport for live events
+    let liveEvent = null;
+    let totalLive = 0;
 
-    if (data.errors && Object.keys(data.errors).length > 0) {
-      return res.status(500).json({ error: JSON.stringify(data.errors) });
-    }
-
-    let fixtures = data.response || [];
-
-    // 2. No live matches — get any match today
-    if (fixtures.length === 0) {
-      const today = new Date().toISOString().split('T')[0];
-      response = await fetch(
-        `https://api-football-v1.p.rapidapi.com/v3/fixtures?date=${today}`,
-        { headers: { 'x-rapidapi-key': key, 'x-rapidapi-host': 'api-football-v1.p.rapidapi.com' } }
+    for (const sport of SPORTS) {
+      const r = await fetch(
+        `https://sportapi7.p.rapidapi.com/api/v1/sport/${sport}/events/live`,
+        { headers: HEADERS }
       );
-      const d = await response.json();
-      fixtures = d.response || [];
+      const d = await r.json();
+      const events = d.events || [];
+      if (events.length > 0 && !liveEvent) {
+        liveEvent = { event: events[0], sport };
+      }
+      totalLive += events.length;
     }
 
-    if (fixtures.length === 0) {
-      return res.status(200).json({ match: null, message: 'Sin partidos hoy' });
+    // 2. Get upcoming events for today (football only for now)
+    const today = new Date().toISOString().split('T')[0];
+    const upcomingRes = await fetch(
+      `https://sportapi7.p.rapidapi.com/api/v1/sport/football/scheduled-events/${today}/inverse`,
+      { headers: HEADERS }
+    );
+    const upcomingData = await upcomingRes.json();
+    const allToday = upcomingData.events || [];
+
+    // Filter only upcoming (not started)
+    const upcoming = allToday
+      .filter(e => e.status?.type === 'notstarted')
+      .slice(0, 5)
+      .map(e => ({
+        id:       e.id,
+        sport:    'football',
+        league:   e.tournament?.name || e.tournament?.uniqueTournament?.name || '–',
+        home:     e.homeTeam?.name || '–',
+        away:     e.awayTeam?.name || '–',
+        homeLogo: e.homeTeam?.id ? `https://api.sofascore.app/api/v1/team/${e.homeTeam.id}/image` : null,
+        awayLogo: e.awayTeam?.id ? `https://api.sofascore.app/api/v1/team/${e.awayTeam.id}/image` : null,
+        time:     e.startTimestamp
+          ? new Date(e.startTimestamp * 1000).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+          : '–'
+      }));
+
+    // 3. No live events at all
+    if (!liveEvent) {
+      return res.status(200).json({
+        match: null,
+        message: 'Sin partidos en vivo',
+        upcoming,
+        totalLive: 0
+      });
     }
 
-    // Prefer live, then most recently kicked off
-    const live = fixtures.filter(f => ['1H','2H','HT','ET','P'].includes(f.fixture.status.short));
-    const f = live.length > 0 ? live[0] : fixtures[0];
-
-    const homeSt = (f.statistics || [])[0]?.statistics || [];
-    const awaySt = (f.statistics || [])[1]?.statistics || [];
-    const statVal = (arr, type) => arr.find(s => s.type === type)?.value ?? null;
+    const e = liveEvent.event;
+    const homeTeam = e.homeTeam || {};
+    const awayTeam = e.awayTeam || {};
+    const homeScore = e.homeScore || {};
+    const awayScore = e.awayScore || {};
+    const status = e.status || {};
+    const tournament = e.tournament || {};
 
     res.status(200).json({
       match: {
-        id:         f.fixture.id,
-        league:     f.league.name,
-        leagueLogo: f.league.logo,
-        minute:     f.fixture.status.elapsed,
-        status:     f.fixture.status.short,
-        statusLong: f.fixture.status.long,
-        isLive:     live.length > 0,
-        totalLive:  live.length,
-        home: { name: f.teams.home.name, logo: f.teams.home.logo, score: f.goals.home ?? 0 },
-        away: { name: f.teams.away.name, logo: f.teams.away.logo, score: f.goals.away ?? 0 },
+        id:         e.id,
+        sport:      liveEvent.sport,
+        league:     tournament.name || tournament.uniqueTournament?.name || '–',
+        leagueLogo: tournament.uniqueTournament?.id
+          ? `https://api.sofascore.app/api/v1/unique-tournament/${tournament.uniqueTournament.id}/image`
+          : null,
+        minute:     status.description || null,
+        status:     status.type || '–',
+        statusLong: status.description || status.type || '–',
+        isLive:     status.type === 'inprogress',
+        home: {
+          name:  homeTeam.name || homeTeam.shortName || '–',
+          logo:  homeTeam.id ? `https://api.sofascore.app/api/v1/team/${homeTeam.id}/image` : null,
+          score: homeScore.current ?? homeScore.display ?? 0,
+        },
+        away: {
+          name:  awayTeam.name || awayTeam.shortName || '–',
+          logo:  awayTeam.id ? `https://api.sofascore.app/api/v1/team/${awayTeam.id}/image` : null,
+          score: awayScore.current ?? awayScore.display ?? 0,
+        },
         stats: {
-          possessionHome: statVal(homeSt, 'Ball Possession'),
-          possessionAway: statVal(awaySt, 'Ball Possession'),
-          shotsHome:      statVal(homeSt, 'Shots on Goal'),
-          shotsAway:      statVal(awaySt, 'Shots on Goal'),
-          foulsHome:      statVal(homeSt, 'Fouls'),
-          foulsAway:      statVal(awaySt, 'Fouls'),
-          cornersHome:    statVal(homeSt, 'Corner Kicks'),
-          cornersAway:    statVal(awaySt, 'Corner Kicks'),
-          yellowHome:     statVal(homeSt, 'Yellow Cards'),
-          yellowAway:     statVal(awaySt, 'Yellow Cards'),
+          possessionHome: null, possessionAway: null,
+          shotsHome: null,      shotsAway: null,
+          foulsHome: null,      foulsAway: null,
+          cornersHome: null,    cornersAway: null,
+          yellowHome: null,     yellowAway: null,
         },
         updated: new Date().toISOString()
-      }
+      },
+      totalLive,
+      upcoming
     });
 
   } catch (err) {
