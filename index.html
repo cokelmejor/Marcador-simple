@@ -14,8 +14,6 @@ html, body {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 14px;
 }
-
-/* ── MAIN CARD ── */
 .card {
   background: rgba(8,22,60,0.85);
   border-radius: 24px;
@@ -25,11 +23,10 @@ html, body {
   width: 92%; max-width: 520px;
   display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
-
-.league-row { display: flex; align-items: center; gap: 8px; }
+.league-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .ldot {
   width: 7px; height: 7px; border-radius: 50%; background: #ff4d4d;
-  animation: pulse 1.8s ease-in-out infinite;
+  animation: pulse 1.8s ease-in-out infinite; flex-shrink: 0;
 }
 .ldot.off { background: rgba(255,255,255,.3); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
@@ -39,7 +36,6 @@ html, body {
   background: rgba(245,197,24,0.15); color: #f5c518;
   padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(245,197,24,0.3);
 }
-
 .scoreboard { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
 .team { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
 .logo-wrap {
@@ -49,19 +45,14 @@ html, body {
 }
 .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
 .team-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1.5px; text-align: center; }
-
 .center { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
 .score { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; letter-spacing: 6px; line-height: 1; }
 .score .sep { opacity: .35; font-size: 2.6rem; }
 .clock-wrap { display: flex; align-items: center; gap: 5px; }
 .clock-dot { width: 5px; height: 5px; border-radius: 50%; background: #ff4d4d; animation: pulse 1.8s ease-in-out infinite; }
-.clock { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 2px; color: #ff6b6b; animation: blink 4s ease-in-out infinite; }
-.clock.static { color: rgba(255,255,255,.4); animation: none; }
-@keyframes blink { 0%,100%{color:#ff4d4d} 50%{color:#ff9999} }
-
+.clock { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 2px; color: #ff6b6b; }
+.clock.static { color: rgba(255,255,255,.4); }
 .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); }
-
-/* Stats */
 .stats { width: 100%; display: flex; flex-direction: column; gap: 8px; }
 .stat-row { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; }
 .sv { font-size: 0.85rem; font-weight: 700; }
@@ -70,53 +61,46 @@ html, body {
 .stat-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.4); }
 .bar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; position: relative; }
 .bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,.55); border-radius: 3px; transition: width .7s ease; }
-
-.footer { font-size: 0.58rem; letter-spacing: 1px; color: rgba(255,255,255,.22); text-transform: uppercase; }
-
-/* ── UPCOMING ── */
-.upcoming-card {
-  background: rgba(8,22,60,0.7);
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.07);
-  padding: 14px 20px;
-  width: 92%; max-width: 520px;
-  display: flex; flex-direction: column; gap: 8px;
-}
-.upcoming-title {
+.upcoming-mode { width: 100%; display: flex; flex-direction: column; gap: 0; }
+.upcoming-header {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.75rem; letter-spacing: 3px; color: rgba(255,255,255,.4);
-  text-transform: uppercase; margin-bottom: 2px;
+  font-size: 0.72rem; letter-spacing: 3px;
+  color: rgba(255,255,255,.35); text-transform: uppercase;
+  text-align: center; margin-bottom: 14px;
 }
 .upcoming-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,.05);
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
 }
 .upcoming-item:last-child { border-bottom: none; }
 .up-time {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem; letter-spacing: 1px; color: #f5c518;
-  min-width: 38px; text-align: center;
+  font-size: 1.1rem; letter-spacing: 2px; color: #f5c518;
+  min-width: 48px; text-align: center; flex-shrink: 0;
 }
-.up-logos { display: flex; align-items: center; gap: 4px; }
+.up-match { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.up-team { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; flex-shrink: 0; }
 .up-logo {
-  width: 22px; height: 22px; background: #fff; border-radius: 50%;
+  width: 36px; height: 36px; background: #fff; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  padding: 2px; overflow: hidden; flex-shrink: 0;
+  padding: 3px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.4);
 }
 .up-logo img { width: 100%; height: 100%; object-fit: contain; }
-.up-vs { font-size: 0.6rem; color: rgba(255,255,255,.3); font-weight: 700; }
-.up-teams {
-  flex: 1; font-size: 0.8rem; font-weight: 600;
-  color: rgba(255,255,255,.7);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.up-tname { font-size: 0.68rem; font-weight: 700; text-align: center; color: rgba(255,255,255,.8); line-height: 1.1; }
+.up-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.up-vs { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: rgba(255,255,255,.25); letter-spacing: 2px; }
+.up-league { font-size: 0.58rem; color: rgba(255,255,255,.3); letter-spacing: .5px; text-align: center; }
+.countdown {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.68rem; letter-spacing: 1px;
+  color: rgba(255,255,255,.35); text-align: center; margin-top: 4px;
 }
-.up-league { font-size: 0.62rem; color: rgba(255,255,255,.3); letter-spacing: .5px; }
+.footer { font-size: 0.58rem; letter-spacing: 1px; color: rgba(255,255,255,.22); text-transform: uppercase; }
 </style>
 </head>
 <body>
 
-<!-- MAIN CARD -->
 <div class="card">
   <div class="league-row">
     <div class="ldot" id="ldot"></div>
@@ -124,195 +108,168 @@ html, body {
     <div class="sport-badge" id="sport-badge" style="display:none"></div>
   </div>
 
-  <div class="scoreboard" id="scoreboard" style="visibility:hidden">
-    <div class="team">
-      <div class="logo-wrap"><img id="home-logo" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>'"></div>
-      <div class="team-name" id="home-name">–</div>
-    </div>
-    <div class="center">
-      <div class="score"><span id="home-score">0</span><span class="sep"> – </span><span id="away-score">0</span></div>
-      <div class="clock-wrap">
-        <div class="clock-dot" id="clock-dot"></div>
-        <div class="clock" id="clock">–</div>
+  <div id="live-view" style="display:none; width:100%; flex-direction:column; align-items:center; gap:20px;">
+    <div class="scoreboard">
+      <div class="team">
+        <div class="logo-wrap"><img id="home-logo" src="" alt="" onerror="this.style.opacity=0"></div>
+        <div class="team-name" id="home-name">–</div>
+      </div>
+      <div class="center">
+        <div class="score"><span id="home-score">0</span><span class="sep"> – </span><span id="away-score">0</span></div>
+        <div class="clock-wrap">
+          <div class="clock-dot" id="clock-dot"></div>
+          <div class="clock" id="clock">–</div>
+        </div>
+      </div>
+      <div class="team">
+        <div class="logo-wrap"><img id="away-logo" src="" alt="" onerror="this.style.opacity=0"></div>
+        <div class="team-name" id="away-name">–</div>
       </div>
     </div>
-    <div class="team">
-      <div class="logo-wrap"><img id="away-logo" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>'"></div>
-      <div class="team-name" id="away-name">–</div>
+    <div class="divider"></div>
+    <div class="stats">
+      <div class="stat-row">
+        <div class="sv h" id="poss-h">–</div>
+        <div class="stat-mid"><div class="stat-lbl">Posesión</div><div class="bar-wrap"><div class="bar-fill" id="bar-poss" style="width:50%"></div></div></div>
+        <div class="sv a" id="poss-a">–</div>
+      </div>
+      <div class="stat-row">
+        <div class="sv h" id="shots-h">–</div>
+        <div class="stat-mid"><div class="stat-lbl">Tiros a puerta</div><div class="bar-wrap"><div class="bar-fill" id="bar-shots" style="width:50%"></div></div></div>
+        <div class="sv a" id="shots-a">–</div>
+      </div>
+      <div class="stat-row">
+        <div class="sv h" id="fouls-h">–</div>
+        <div class="stat-mid"><div class="stat-lbl">Faltas</div><div class="bar-wrap"><div class="bar-fill" id="bar-fouls" style="width:50%"></div></div></div>
+        <div class="sv a" id="fouls-a">–</div>
+      </div>
+      <div class="stat-row">
+        <div class="sv h" id="corners-h">–</div>
+        <div class="stat-mid"><div class="stat-lbl">Córners</div><div class="bar-wrap"><div class="bar-fill" id="bar-corners" style="width:50%"></div></div></div>
+        <div class="sv a" id="corners-a">–</div>
+      </div>
+      <div class="stat-row">
+        <div class="sv h" id="yellow-h">–</div>
+        <div class="stat-mid"><div class="stat-lbl">Tarjetas amarillas</div><div class="bar-wrap"><div class="bar-fill" id="bar-yellow" style="width:50%"></div></div></div>
+        <div class="sv a" id="yellow-a">–</div>
+      </div>
     </div>
   </div>
 
-  <div class="divider"></div>
-
-  <div class="stats" id="stats">
-    <div class="stat-row">
-      <div class="sv h" id="poss-h">–</div>
-      <div class="stat-mid"><div class="stat-lbl">Posesión</div><div class="bar-wrap"><div class="bar-fill" id="bar-poss" style="width:50%"></div></div></div>
-      <div class="sv a" id="poss-a">–</div>
-    </div>
-    <div class="stat-row">
-      <div class="sv h" id="shots-h">–</div>
-      <div class="stat-mid"><div class="stat-lbl">Tiros a puerta</div><div class="bar-wrap"><div class="bar-fill" id="bar-shots" style="width:50%"></div></div></div>
-      <div class="sv a" id="shots-a">–</div>
-    </div>
-    <div class="stat-row">
-      <div class="sv h" id="fouls-h">–</div>
-      <div class="stat-mid"><div class="stat-lbl">Faltas</div><div class="bar-wrap"><div class="bar-fill" id="bar-fouls" style="width:50%"></div></div></div>
-      <div class="sv a" id="fouls-a">–</div>
-    </div>
-    <div class="stat-row">
-      <div class="sv h" id="corners-h">–</div>
-      <div class="stat-mid"><div class="stat-lbl">Córners</div><div class="bar-wrap"><div class="bar-fill" id="bar-corners" style="width:50%"></div></div></div>
-      <div class="sv a" id="corners-a">–</div>
-    </div>
-    <div class="stat-row">
-      <div class="sv h" id="yellow-h">–</div>
-      <div class="stat-mid"><div class="stat-lbl">Tarjetas amarillas</div><div class="bar-wrap"><div class="bar-fill" id="bar-yellow" style="width:50%"></div></div></div>
-      <div class="sv a" id="yellow-a">–</div>
+  <div id="upcoming-view" style="display:none; width:100%;">
+    <div class="upcoming-mode">
+      <div class="upcoming-header" id="upcoming-header">Próximos partidos hoy</div>
+      <div id="upcoming-list"></div>
+      <div class="countdown" id="countdown"></div>
     </div>
   </div>
 
   <div class="footer" id="footer">–</div>
 </div>
 
-<!-- UPCOMING -->
-<div class="upcoming-card" id="upcoming-card" style="display:none">
-  <div class="upcoming-title">Próximos partidos hoy</div>
-  <div id="upcoming-list"></div>
-</div>
-
 <script>
-let clockInterval = null;
-
-function startClock(description) {
-  if (clockInterval) clearInterval(clockInterval);
-  document.getElementById('clock').textContent = description || '–';
-  document.getElementById('clock').classList.remove('static');
-  document.getElementById('clock-dot').style.display = 'block';
-}
-
 function set(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = (val !== null && val !== undefined) ? val : '–';
 }
-
 function setBar(id, h, a) {
-  const ph = parseFloat(h) || 0;
-  const pa = parseFloat(a) || 0;
-  const total = ph + pa || 1;
+  const ph = parseFloat(h) || 0, pa = parseFloat(a) || 0;
   const el = document.getElementById(id);
-  if (el) el.style.width = Math.round(ph / total * 100) + '%';
+  if (el) el.style.width = Math.round(ph / (ph + pa || 1) * 100) + '%';
 }
-
 function sportEmoji(sport) {
-  const map = { football: '⚽', tennis: '🎾', basketball: '🏀', hockey: '🏒', baseball: '⚾' };
-  return map[sport] || '🏅';
+  return { football:'⚽', tennis:'🎾', basketball:'🏀', hockey:'🏒' }[sport] || '🏅';
 }
-
+function timeUntil(ts) {
+  const diff = ts * 1000 - Date.now();
+  if (diff <= 0) return 'Comenzando...';
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  if (h > 0) return `En ${h}h ${m}m`;
+  return `En ${m} minutos`;
+}
 function renderUpcoming(upcoming) {
-  const card = document.getElementById('upcoming-card');
   const list = document.getElementById('upcoming-list');
-  if (!upcoming || upcoming.length === 0) { card.style.display = 'none'; return; }
-
-  card.style.display = 'flex';
+  if (!upcoming || upcoming.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.3);font-size:0.8rem;padding:20px 0">No hay más partidos programados hoy</div>';
+    return;
+  }
   list.innerHTML = upcoming.map(u => `
     <div class="upcoming-item">
       <div class="up-time">${u.time}</div>
-      <div class="up-logos">
-        <div class="up-logo"><img src="${u.homeLogo || ''}" onerror="this.style.opacity=0"></div>
-        <div class="up-vs">vs</div>
-        <div class="up-logo"><img src="${u.awayLogo || ''}" onerror="this.style.opacity=0"></div>
-      </div>
-      <div style="flex:1;min-width:0">
-        <div class="up-teams">${u.home} – ${u.away}</div>
-        <div class="up-league">${u.league}</div>
+      <div class="up-match">
+        <div class="up-team">
+          <div class="up-logo"><img src="${u.homeLogo||''}" onerror="this.style.opacity=0"></div>
+          <div class="up-tname">${u.home}</div>
+        </div>
+        <div class="up-center">
+          <div class="up-vs">VS</div>
+          <div class="up-league">${u.league}</div>
+        </div>
+        <div class="up-team">
+          <div class="up-logo"><img src="${u.awayLogo||''}" onerror="this.style.opacity=0"></div>
+          <div class="up-tname">${u.away}</div>
+        </div>
       </div>
     </div>
   `).join('');
+  if (upcoming[0] && upcoming[0].timestamp) {
+    set('countdown', timeUntil(upcoming[0].timestamp));
+    setInterval(() => set('countdown', timeUntil(upcoming[0].timestamp)), 30000);
+  }
 }
-
 async function fetchMatch() {
   try {
     const res = await fetch('/api/match');
     const data = await res.json();
-
-    if (data.error) {
-      set('league-name', 'Error de configuración');
-      set('footer', data.error);
-      return;
-    }
-
-    renderUpcoming(data.upcoming);
-
+    if (data.error) { set('league-name', 'Error'); set('footer', data.error); return; }
     if (!data.match) {
-      set('league-name', 'Sin partidos en vivo');
       document.getElementById('ldot').classList.add('off');
-      set('footer', data.message || 'Vuelve más tarde');
+      set('league-name', 'Sin partidos en vivo');
+      document.getElementById('live-view').style.display = 'none';
+      document.getElementById('upcoming-view').style.display = 'block';
+      renderUpcoming(data.upcoming);
+      set('footer', 'Actualizado: ' + new Date().toLocaleTimeString('es-ES'));
       return;
     }
-
     const m = data.match;
-
-    // League + sport badge
+    document.getElementById('ldot').classList.remove('off');
     set('league-name', m.league);
     const badge = document.getElementById('sport-badge');
     badge.style.display = 'inline-block';
     badge.textContent = sportEmoji(m.sport) + ' ' + m.sport.toUpperCase();
-
-    const ldot = document.getElementById('ldot');
-    ldot.classList.toggle('off', !m.isLive);
-
-    // Show scoreboard
-    document.getElementById('scoreboard').style.visibility = 'visible';
-
-    // Teams
+    document.getElementById('live-view').style.display = 'flex';
+    document.getElementById('upcoming-view').style.display = 'none';
     document.getElementById('home-logo').src = m.home.logo || '';
     document.getElementById('away-logo').src = m.away.logo || '';
-    set('home-name', m.home.name);
-    set('away-name', m.away.name);
-    set('home-score', m.home.score);
-    set('away-score', m.away.score);
-
-    // Clock
+    set('home-name', m.home.name); set('away-name', m.away.name);
+    set('home-score', m.home.score); set('away-score', m.away.score);
     const clock = document.getElementById('clock');
-    const clockDot = document.getElementById('clock-dot');
     if (m.isLive && m.minute) {
-      clock.textContent = m.minute;
-      clock.classList.remove('static');
-      clockDot.style.display = 'block';
+      clock.textContent = m.minute; clock.classList.remove('static');
+      document.getElementById('clock-dot').style.display = 'block';
     } else {
-      clock.textContent = m.statusLong || m.status;
-      clock.classList.add('static');
-      clockDot.style.display = 'none';
+      clock.textContent = m.statusLong || m.status; clock.classList.add('static');
+      document.getElementById('clock-dot').style.display = 'none';
     }
-
-    // Stats
     const s = m.stats;
-    const hasStats = Object.values(s).some(v => v !== null);
-    document.getElementById('stats').style.opacity = hasStats ? '1' : '0.3';
-
-    set('poss-h', s.possessionHome);  set('poss-a', s.possessionAway);
-    set('shots-h', s.shotsHome);      set('shots-a', s.shotsAway);
-    set('fouls-h', s.foulsHome);      set('fouls-a', s.foulsAway);
-    set('corners-h', s.cornersHome);  set('corners-a', s.cornersAway);
-    set('yellow-h', s.yellowHome);    set('yellow-a', s.yellowAway);
-
+    set('poss-h', s.possessionHome); set('poss-a', s.possessionAway);
+    set('shots-h', s.shotsHome);     set('shots-a', s.shotsAway);
+    set('fouls-h', s.foulsHome);     set('fouls-a', s.foulsAway);
+    set('corners-h', s.cornersHome); set('corners-a', s.cornersAway);
+    set('yellow-h', s.yellowHome);   set('yellow-a', s.yellowAway);
     const ph = parseFloat(s.possessionHome) || 50;
     document.getElementById('bar-poss').style.width = ph + '%';
     setBar('bar-shots', s.shotsHome, s.shotsAway);
     setBar('bar-fouls', s.foulsHome, s.foulsAway);
     setBar('bar-corners', s.cornersHome, s.cornersAway);
     setBar('bar-yellow', s.yellowHome, s.yellowAway);
-
     const liveCount = data.totalLive > 1 ? ` · ${data.totalLive} en vivo` : '';
-    const updated = new Date(m.updated).toLocaleTimeString('es-ES');
-    set('footer', `Actualizado: ${updated}${liveCount} · refresco: 60s`);
-
+    set('footer', `Actualizado: ${new Date(m.updated).toLocaleTimeString('es-ES')}${liveCount} · refresco 60s`);
   } catch (e) {
     set('footer', 'Error de red: ' + e.message);
   }
 }
-
 fetchMatch();
 setInterval(fetchMatch, 60000);
 </script>
