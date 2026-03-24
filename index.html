@@ -8,308 +8,309 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
+  width: 100%; height: 100%; overflow: hidden;
   background: linear-gradient(150deg, #1e60b0 0%, #0e3474 45%, #071a40 100%);
   font-family: 'Barlow Condensed', sans-serif;
   color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
 }
 
 .card {
-  background: rgba(8, 22, 60, 0.82);
+  background: rgba(8,22,60,0.85);
   border-radius: 24px;
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-  padding: 32px 40px 28px;
-  width: 92%;
-  max-width: 520px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
+  padding: 32px 44px 28px;
+  width: 92%; max-width: 540px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 22px;
 }
 
 /* League */
-.league-row {
-  display: flex; align-items: center; gap: 8px;
-}
+.league-row { display: flex; align-items: center; gap: 8px; }
 .ldot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #ff4d4d;
+  width: 7px; height: 7px; border-radius: 50%; background: #ff4d4d;
   animation: pulse 1.8s ease-in-out infinite;
 }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
 .league-name {
-  font-size: 0.78rem; font-weight: 700;
+  font-size: 0.76rem; font-weight: 700;
   letter-spacing: 2.5px; text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.5);
 }
 
 /* Scoreboard */
 .scoreboard {
   display: flex; align-items: center;
-  justify-content: space-between;
-  gap: 16px; width: 100%;
+  justify-content: space-between; gap: 12px; width: 100%;
 }
-
-.team {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 10px; flex: 1;
-}
+.team { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
 .logo-wrap {
-  width: 72px; height: 72px;
-  background: #fff; border-radius: 50%;
+  width: 70px; height: 70px; background: #fff; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  padding: 7px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-  overflow: hidden;
+  padding: 7px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); overflow: hidden;
 }
 .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
-.logo-wrap .fallback {
-  font-size: 1.8rem; line-height: 1;
-}
 .team-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.15rem; letter-spacing: 1.5px;
-  text-align: center; line-height: 1.1;
+  font-size: 1.1rem; letter-spacing: 1.5px; text-align: center;
 }
 
-.center { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+.center { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
 .score {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 4rem; letter-spacing: 6px; line-height: 1;
-  font-variant-numeric: tabular-nums;
+  font-size: 4.2rem; letter-spacing: 6px; line-height: 1;
 }
-.minute {
+.score .sep { opacity: .35; font-size: 2.8rem; }
+
+/* Live clock */
+.clock-wrap { display: flex; align-items: center; gap: 6px; }
+.clock-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: #ff4d4d;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+.clock {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.9rem; letter-spacing: 2px;
-  color: #ff6b6b;
+  font-size: 0.88rem; letter-spacing: 2px; color: #ff6b6b;
   animation: blink 4s ease-in-out infinite;
+}
+.status-txt {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.88rem; letter-spacing: 2px; color: rgba(255,255,255,.4);
 }
 @keyframes blink { 0%,100%{color:#ff4d4d} 50%{color:#ff9999} }
 
 /* Stats */
-.stats { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-
-.stat-row {
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  align-items: center; gap: 8px;
-}
-.sv {
-  font-size: 0.9rem; font-weight: 700;
-  color: #fff;
-}
-.sv.home { text-align: right; }
-.sv.away { text-align: left; }
-.stat-center { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.stat-label {
-  font-size: 0.62rem; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
-}
-.bar-wrap {
-  width: 100%; height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px; overflow: hidden; position: relative;
-}
-.bar-fill {
-  position: absolute; left: 0; top: 0; height: 100%;
-  background: rgba(255,255,255,0.6);
-  border-radius: 3px;
-  transition: width 0.6s ease;
-}
-
-/* Divider */
 .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); }
+.stats { width: 100%; display: flex; flex-direction: column; gap: 9px; }
+.stat-row { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; }
+.sv { font-size: 0.88rem; font-weight: 700; }
+.sv.h { text-align: right; } .sv.a { text-align: left; }
+.stat-mid { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.stat-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.4); }
+.bar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; position: relative; }
+.bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,.55); border-radius: 3px; transition: width .7s ease; }
 
-/* Status */
-.status-row {
-  font-size: 0.62rem; letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.28); text-transform: uppercase;
-}
+/* Footer */
+.footer { font-size: 0.58rem; letter-spacing: 1px; color: rgba(255,255,255,.22); text-transform: uppercase; }
 
-/* Loading / error */
-.state-msg {
-  text-align: center;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem; letter-spacing: 3px;
-  color: rgba(255,255,255,0.4);
-  padding: 20px 0;
+/* Error / loading */
+.msg { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 3px; color: rgba(255,255,255,.4); text-align: center; padding: 10px 0; }
+.err { color: #ff6b6b; font-size: 0.7rem; letter-spacing: 1px; max-width: 400px; text-align: center; }
+
+/* Debug panel — hidden by default, show via ?debug in URL */
+.debug {
+  display: none;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,.5);
+  letter-spacing: .5px;
+  max-width: 540px; width: 92%;
+  word-break: break-all;
 }
 </style>
 </head>
 <body>
 
 <div class="card">
-
   <div class="league-row">
-    <div class="ldot"></div>
-    <div class="league-name" id="league-name">Cargando...</div>
+    <div class="ldot" id="ldot"></div>
+    <div class="league-name" id="league-name">Conectando...</div>
   </div>
 
-  <div class="scoreboard" id="scoreboard" style="display:none">
+  <div class="scoreboard" id="scoreboard" style="visibility:hidden">
     <div class="team">
-      <div class="logo-wrap">
-        <img id="home-logo" src="" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <span class="fallback" style="display:none">⚽</span>
-      </div>
+      <div class="logo-wrap"><img id="home-logo" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>'"></div>
       <div class="team-name" id="home-name">–</div>
     </div>
 
     <div class="center">
       <div class="score">
-        <span id="home-score">0</span>
-        <span style="opacity:.4;font-size:2.5rem">–</span>
-        <span id="away-score">0</span>
+        <span id="home-score">0</span><span class="sep"> – </span><span id="away-score">0</span>
       </div>
-      <div class="minute" id="minute">–'</div>
+      <div class="clock-wrap" id="clock-wrap">
+        <div class="clock-dot" id="clock-dot"></div>
+        <div class="clock" id="clock">–'</div>
+      </div>
     </div>
 
     <div class="team">
-      <div class="logo-wrap">
-        <img id="away-logo" src="" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <span class="fallback" style="display:none">⚽</span>
-      </div>
+      <div class="logo-wrap"><img id="away-logo" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>'"></div>
       <div class="team-name" id="away-name">–</div>
     </div>
   </div>
 
-  <div class="divider" id="divider" style="display:none"></div>
+  <div class="divider"></div>
 
-  <div class="stats" id="stats" style="display:none">
+  <div class="stats" id="stats">
     <div class="stat-row">
-      <div class="sv home" id="poss-h">–</div>
-      <div class="stat-center">
-        <div class="stat-label">Posesión</div>
-        <div class="bar-wrap"><div class="bar-fill" id="bar-poss" style="width:50%"></div></div>
-      </div>
-      <div class="sv away" id="poss-a">–</div>
+      <div class="sv h" id="poss-h">–</div>
+      <div class="stat-mid"><div class="stat-lbl">Posesión</div><div class="bar-wrap"><div class="bar-fill" id="bar-poss" style="width:50%"></div></div></div>
+      <div class="sv a" id="poss-a">–</div>
     </div>
     <div class="stat-row">
-      <div class="sv home" id="shots-h">–</div>
-      <div class="stat-center">
-        <div class="stat-label">Tiros a puerta</div>
-        <div class="bar-wrap"><div class="bar-fill" id="bar-shots" style="width:50%"></div></div>
-      </div>
-      <div class="sv away" id="shots-a">–</div>
+      <div class="sv h" id="shots-h">–</div>
+      <div class="stat-mid"><div class="stat-lbl">Tiros a puerta</div><div class="bar-wrap"><div class="bar-fill" id="bar-shots" style="width:50%"></div></div></div>
+      <div class="sv a" id="shots-a">–</div>
     </div>
     <div class="stat-row">
-      <div class="sv home" id="fouls-h">–</div>
-      <div class="stat-center">
-        <div class="stat-label">Faltas</div>
-        <div class="bar-wrap"><div class="bar-fill" id="bar-fouls" style="width:50%"></div></div>
-      </div>
-      <div class="sv away" id="fouls-a">–</div>
+      <div class="sv h" id="fouls-h">–</div>
+      <div class="stat-mid"><div class="stat-lbl">Faltas</div><div class="bar-wrap"><div class="bar-fill" id="bar-fouls" style="width:50%"></div></div></div>
+      <div class="sv a" id="fouls-a">–</div>
     </div>
     <div class="stat-row">
-      <div class="sv home" id="corners-h">–</div>
-      <div class="stat-center">
-        <div class="stat-label">Córners</div>
-        <div class="bar-wrap"><div class="bar-fill" id="bar-corners" style="width:50%"></div></div>
-      </div>
-      <div class="sv away" id="corners-a">–</div>
+      <div class="sv h" id="corners-h">–</div>
+      <div class="stat-mid"><div class="stat-lbl">Córners</div><div class="bar-wrap"><div class="bar-fill" id="bar-corners" style="width:50%"></div></div></div>
+      <div class="sv a" id="corners-a">–</div>
     </div>
     <div class="stat-row">
-      <div class="sv home" id="yellow-h">–</div>
-      <div class="stat-center">
-        <div class="stat-label">Tarjetas amarillas</div>
-        <div class="bar-wrap"><div class="bar-fill" id="bar-yellow" style="width:50%"></div></div>
-      </div>
-      <div class="sv away" id="yellow-a">–</div>
+      <div class="sv h" id="yellow-h">–</div>
+      <div class="stat-mid"><div class="stat-lbl">Tarjetas amarillas</div><div class="bar-wrap"><div class="bar-fill" id="bar-yellow" style="width:50%"></div></div></div>
+      <div class="sv a" id="yellow-a">–</div>
     </div>
   </div>
 
-  <div class="status-row" id="status-row">Conectando...</div>
-
+  <div class="footer" id="footer">–</div>
 </div>
 
+<div class="debug" id="debug-panel"></div>
+
 <script>
+const isDebug = location.search.includes('debug');
+if (isDebug) document.getElementById('debug-panel').style.display = 'block';
+
+// Local clock — ticks every second when live
+let localMinute = null;
+let localSeconds = 0;
+let clockInterval = null;
+
+function startLocalClock(minute) {
+  localMinute = minute;
+  localSeconds = 0;
+  if (clockInterval) clearInterval(clockInterval);
+  clockInterval = setInterval(() => {
+    localSeconds++;
+    if (localSeconds >= 60) {
+      localSeconds = 0;
+      localMinute++;
+    }
+    document.getElementById('clock').textContent = localMinute + "'";
+  }, 1000);
+}
+
 function pct(a, b) {
-  const ta = parseFloat(a) || 0;
-  const tb = parseFloat(b) || 0;
-  if (ta + tb === 0) return 50;
-  return Math.round((ta / (ta + tb)) * 100);
+  // handle "65%" strings
+  const pa = parseFloat(a) || 0;
+  const pb = parseFloat(b) || 0;
+  if (pa + pb === 0) return 50;
+  return Math.round(pa / (pa + pb) * 100);
 }
 
-function setBar(id, homeVal, awayVal) {
+function set(id, val) {
   const el = document.getElementById(id);
-  if (el) el.style.width = pct(homeVal, awayVal) + '%';
+  if (el) el.textContent = (val !== null && val !== undefined) ? val : '–';
 }
 
-function setText(id, val) {
+function setBar(id, h, a) {
   const el = document.getElementById(id);
-  if (el) el.textContent = (val !== null && val !== undefined && val !== '–') ? val : '–';
+  if (el) el.style.width = pct(h, a) + '%';
 }
 
 async function fetchMatch() {
   try {
     const res = await fetch('/api/match');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const m = data.match;
 
-    if (!m) {
-      document.getElementById('league-name').textContent = 'Sin partidos en vivo ahora mismo';
-      document.getElementById('status-row').textContent = 'Vuelve durante la jornada';
+    if (isDebug) {
+      document.getElementById('debug-panel').textContent = JSON.stringify(data, null, 2);
+    }
+
+    // API / config error
+    if (data.error) {
+      document.getElementById('league-name').textContent = 'Error';
+      document.getElementById('footer').textContent = data.error;
       return;
     }
 
-    // Show hidden sections
-    document.getElementById('scoreboard').style.display = 'flex';
-    document.getElementById('divider').style.display = 'block';
-    document.getElementById('stats').style.display = 'flex';
+    // No matches today
+    if (!data.match) {
+      document.getElementById('league-name').textContent = 'Sin partidos en vivo';
+      document.getElementById('footer').textContent = data.message || 'Vuelve durante la jornada';
+      document.getElementById('ldot').style.background = 'rgba(255,255,255,.3)';
+      document.getElementById('ldot').style.animation = 'none';
+      return;
+    }
 
-    // League & time
-    document.getElementById('league-name').textContent = m.league + ' · En vivo';
-    document.getElementById('minute').textContent = (m.minute ? m.minute + "'" : m.status);
+    const m = data.match;
+    const isLive = m.isLive;
 
-    // Teams
+    // League
+    document.getElementById('league-name').textContent =
+      m.league + (isLive ? ' · En vivo' : ' · ' + m.statusLong);
+    document.getElementById('ldot').style.background = isLive ? '#ff4d4d' : 'rgba(255,255,255,.3)';
+    document.getElementById('ldot').style.animation = isLive ? '' : 'none';
+
+    // Show scoreboard
+    document.getElementById('scoreboard').style.visibility = 'visible';
+
+    // Teams & score
     document.getElementById('home-logo').src = m.home.logo || '';
-    document.getElementById('home-name').textContent = m.home.name;
+    set('home-name',  m.home.name);
+    set('away-logo',  m.away.logo);
     document.getElementById('away-logo').src = m.away.logo || '';
-    document.getElementById('away-name').textContent = m.away.name;
+    set('away-name',  m.away.name);
+    set('home-score', m.home.score);
+    set('away-score', m.away.score);
 
-    // Score
-    document.getElementById('home-score').textContent = m.home.score;
-    document.getElementById('away-score').textContent = m.away.score;
+    // Clock
+    if (isLive && m.minute !== null) {
+      startLocalClock(m.minute);
+      document.getElementById('clock-dot').style.display = 'block';
+    } else {
+      if (clockInterval) clearInterval(clockInterval);
+      document.getElementById('clock').textContent = m.statusLong || m.status;
+      document.getElementById('clock').style.color = 'rgba(255,255,255,.4)';
+      document.getElementById('clock').style.animation = 'none';
+      document.getElementById('clock-dot').style.display = 'none';
+    }
 
     // Stats
     const s = m.stats;
-    setText('poss-h',    s.possessionHome);
-    setText('poss-a',    s.possessionAway);
-    setText('shots-h',   s.shotsHome);
-    setText('shots-a',   s.shotsAway);
-    setText('fouls-h',   s.foulsHome);
-    setText('fouls-a',   s.foulsAway);
-    setText('corners-h', s.cornersHome);
-    setText('corners-a', s.cornersAway);
-    setText('yellow-h',  s.yellowHome);
-    setText('yellow-a',  s.yellowAway);
+    set('poss-h',    s.possessionHome || '–');
+    set('poss-a',    s.possessionAway || '–');
+    set('shots-h',   s.shotsHome ?? '–');
+    set('shots-a',   s.shotsAway ?? '–');
+    set('fouls-h',   s.foulsHome ?? '–');
+    set('fouls-a',   s.foulsAway ?? '–');
+    set('corners-h', s.cornersHome ?? '–');
+    set('corners-a', s.cornersAway ?? '–');
+    set('yellow-h',  s.yellowHome ?? '–');
+    set('yellow-a',  s.yellowAway ?? '–');
 
     // Bars
-    const ph = parseInt(s.possessionHome) || 50;
+    const ph = parseFloat(s.possessionHome) || 50;
     document.getElementById('bar-poss').style.width = ph + '%';
     setBar('bar-shots',   s.shotsHome,   s.shotsAway);
     setBar('bar-fouls',   s.foulsHome,   s.foulsAway);
     setBar('bar-corners', s.cornersHome, s.cornersAway);
     setBar('bar-yellow',  s.yellowHome,  s.yellowAway);
 
-    // Status
+    // Footer
     const updated = new Date(m.updated).toLocaleTimeString('es-ES');
-    document.getElementById('status-row').textContent = 'Actualizado: ' + updated;
+    document.getElementById('footer').textContent = 'API actualizada: ' + updated + ' · refresco: 60s';
 
   } catch (e) {
-    document.getElementById('status-row').textContent = 'Error al cargar datos';
-    console.error(e);
+    document.getElementById('footer').textContent = 'Error de red: ' + e.message;
+    if (isDebug) document.getElementById('debug-panel').textContent = e.stack;
   }
 }
 
 fetchMatch();
-setInterval(fetchMatch, 30000);
+setInterval(fetchMatch, 60000); // API updates every 60s
 </script>
 
 </body>
