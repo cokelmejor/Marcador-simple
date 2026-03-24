@@ -9,21 +9,10 @@ export default async function handler(req, res) {
     });
   }
 
-  // League IDs
-  // 965 = UEFA Women's Champions League
-  // 2   = UEFA Champions League
-  // 3   = UEFA Europa League
-  // 39  = Premier League
-  // 140 = La Liga
-  // 78  = Bundesliga
-  // 135 = Serie A
-  // 61  = Ligue 1
-  const LEAGUES = '965-2-3-39-140-78-135-61';
-
   try {
-    // 1. Live matches in our leagues
+    // 1. Any live football match in the world
     let response = await fetch(
-      `https://api-football-v1.p.rapidapi.com/v3/fixtures?live=${LEAGUES}`,
+      `https://api-football-v1.p.rapidapi.com/v3/fixtures?live=all`,
       { headers: { 'x-rapidapi-key': key, 'x-rapidapi-host': 'api-football-v1.p.rapidapi.com' } }
     );
     const data = await response.json();
@@ -34,18 +23,7 @@ export default async function handler(req, res) {
 
     let fixtures = data.response || [];
 
-    // 2. No live — today's Women's Champions League
-    if (fixtures.length === 0) {
-      const today = new Date().toISOString().split('T')[0];
-      response = await fetch(
-        `https://api-football-v1.p.rapidapi.com/v3/fixtures?date=${today}&league=965&season=2024`,
-        { headers: { 'x-rapidapi-key': key, 'x-rapidapi-host': 'api-football-v1.p.rapidapi.com' } }
-      );
-      const d = await response.json();
-      fixtures = d.response || [];
-    }
-
-    // 3. Still nothing — all leagues today
+    // 2. No live matches — get any match today
     if (fixtures.length === 0) {
       const today = new Date().toISOString().split('T')[0];
       response = await fetch(
@@ -60,6 +38,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ match: null, message: 'Sin partidos hoy' });
     }
 
+    // Prefer live, then most recently kicked off
     const live = fixtures.filter(f => ['1H','2H','HT','ET','P'].includes(f.fixture.status.short));
     const f = live.length > 0 ? live[0] : fixtures[0];
 
@@ -76,6 +55,7 @@ export default async function handler(req, res) {
         status:     f.fixture.status.short,
         statusLong: f.fixture.status.long,
         isLive:     live.length > 0,
+        totalLive:  live.length,
         home: { name: f.teams.home.name, logo: f.teams.home.logo, score: f.goals.home ?? 0 },
         away: { name: f.teams.away.name, logo: f.teams.away.logo, score: f.goals.away ?? 0 },
         stats: {
