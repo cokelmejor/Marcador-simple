@@ -6,120 +6,122 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body {
   width: 100%; height: 100%; overflow: hidden;
   background: linear-gradient(150deg, #1e60b0 0%, #0e3474 45%, #071a40 100%);
   font-family: 'Barlow Condensed', sans-serif;
   color: #fff;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 16px;
+  align-items: center; justify-content: center; gap: 14px;
 }
 
+/* ── MAIN CARD ── */
 .card {
   background: rgba(8,22,60,0.85);
   border-radius: 24px;
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-  padding: 32px 44px 28px;
-  width: 92%; max-width: 540px;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 22px;
+  padding: 28px 40px 24px;
+  width: 92%; max-width: 520px;
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
 
-/* League */
 .league-row { display: flex; align-items: center; gap: 8px; }
 .ldot {
   width: 7px; height: 7px; border-radius: 50%; background: #ff4d4d;
   animation: pulse 1.8s ease-in-out infinite;
 }
+.ldot.off { background: rgba(255,255,255,.3); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
-.league-name {
-  font-size: 0.76rem; font-weight: 700;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+.league-name { font-size: 0.76rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.sport-badge {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  background: rgba(245,197,24,0.15); color: #f5c518;
+  padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(245,197,24,0.3);
 }
 
-/* Scoreboard */
-.scoreboard {
-  display: flex; align-items: center;
-  justify-content: space-between; gap: 12px; width: 100%;
-}
+.scoreboard { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
 .team { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
 .logo-wrap {
-  width: 70px; height: 70px; background: #fff; border-radius: 50%;
+  width: 68px; height: 68px; background: #fff; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  padding: 7px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); overflow: hidden;
+  padding: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); overflow: hidden;
 }
 .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
-.team-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem; letter-spacing: 1.5px; text-align: center;
-}
+.team-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1.5px; text-align: center; }
 
 .center { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
-.score {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 4.2rem; letter-spacing: 6px; line-height: 1;
-}
-.score .sep { opacity: .35; font-size: 2.8rem; }
-
-/* Live clock */
-.clock-wrap { display: flex; align-items: center; gap: 6px; }
-.clock-dot {
-  width: 5px; height: 5px; border-radius: 50%; background: #ff4d4d;
-  animation: pulse 1.8s ease-in-out infinite;
-}
-.clock {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.88rem; letter-spacing: 2px; color: #ff6b6b;
-  animation: blink 4s ease-in-out infinite;
-}
-.status-txt {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.88rem; letter-spacing: 2px; color: rgba(255,255,255,.4);
-}
+.score { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; letter-spacing: 6px; line-height: 1; }
+.score .sep { opacity: .35; font-size: 2.6rem; }
+.clock-wrap { display: flex; align-items: center; gap: 5px; }
+.clock-dot { width: 5px; height: 5px; border-radius: 50%; background: #ff4d4d; animation: pulse 1.8s ease-in-out infinite; }
+.clock { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 2px; color: #ff6b6b; animation: blink 4s ease-in-out infinite; }
+.clock.static { color: rgba(255,255,255,.4); animation: none; }
 @keyframes blink { 0%,100%{color:#ff4d4d} 50%{color:#ff9999} }
 
-/* Stats */
 .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); }
-.stats { width: 100%; display: flex; flex-direction: column; gap: 9px; }
+
+/* Stats */
+.stats { width: 100%; display: flex; flex-direction: column; gap: 8px; }
 .stat-row { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; }
-.sv { font-size: 0.88rem; font-weight: 700; }
+.sv { font-size: 0.85rem; font-weight: 700; }
 .sv.h { text-align: right; } .sv.a { text-align: left; }
 .stat-mid { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .stat-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.4); }
 .bar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; position: relative; }
 .bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,.55); border-radius: 3px; transition: width .7s ease; }
 
-/* Footer */
 .footer { font-size: 0.58rem; letter-spacing: 1px; color: rgba(255,255,255,.22); text-transform: uppercase; }
 
-/* Error / loading */
-.msg { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 3px; color: rgba(255,255,255,.4); text-align: center; padding: 10px 0; }
-.err { color: #ff6b6b; font-size: 0.7rem; letter-spacing: 1px; max-width: 400px; text-align: center; }
-
-/* Debug panel — hidden by default, show via ?debug in URL */
-.debug {
-  display: none;
-  background: rgba(0,0,0,0.6);
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 0.65rem;
-  color: rgba(255,255,255,.5);
-  letter-spacing: .5px;
-  max-width: 540px; width: 92%;
-  word-break: break-all;
+/* ── UPCOMING ── */
+.upcoming-card {
+  background: rgba(8,22,60,0.7);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 14px 20px;
+  width: 92%; max-width: 520px;
+  display: flex; flex-direction: column; gap: 8px;
 }
+.upcoming-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem; letter-spacing: 3px; color: rgba(255,255,255,.4);
+  text-transform: uppercase; margin-bottom: 2px;
+}
+.upcoming-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.upcoming-item:last-child { border-bottom: none; }
+.up-time {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem; letter-spacing: 1px; color: #f5c518;
+  min-width: 38px; text-align: center;
+}
+.up-logos { display: flex; align-items: center; gap: 4px; }
+.up-logo {
+  width: 22px; height: 22px; background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 2px; overflow: hidden; flex-shrink: 0;
+}
+.up-logo img { width: 100%; height: 100%; object-fit: contain; }
+.up-vs { font-size: 0.6rem; color: rgba(255,255,255,.3); font-weight: 700; }
+.up-teams {
+  flex: 1; font-size: 0.8rem; font-weight: 600;
+  color: rgba(255,255,255,.7);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.up-league { font-size: 0.62rem; color: rgba(255,255,255,.3); letter-spacing: .5px; }
 </style>
 </head>
 <body>
 
+<!-- MAIN CARD -->
 <div class="card">
   <div class="league-row">
     <div class="ldot" id="ldot"></div>
     <div class="league-name" id="league-name">Conectando...</div>
+    <div class="sport-badge" id="sport-badge" style="display:none"></div>
   </div>
 
   <div class="scoreboard" id="scoreboard" style="visibility:hidden">
@@ -127,17 +129,13 @@ html, body {
       <div class="logo-wrap"><img id="home-logo" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>'"></div>
       <div class="team-name" id="home-name">–</div>
     </div>
-
     <div class="center">
-      <div class="score">
-        <span id="home-score">0</span><span class="sep"> – </span><span id="away-score">0</span>
-      </div>
-      <div class="clock-wrap" id="clock-wrap">
+      <div class="score"><span id="home-score">0</span><span class="sep"> – </span><span id="away-score">0</span></div>
+      <div class="clock-wrap">
         <div class="clock-dot" id="clock-dot"></div>
-        <div class="clock" id="clock">–'</div>
+        <div class="clock" id="clock">–</div>
       </div>
     </div>
-
     <div class="team">
       <div class="logo-wrap"><img id="away-logo" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>'"></div>
       <div class="team-name" id="away-name">–</div>
@@ -177,37 +175,20 @@ html, body {
   <div class="footer" id="footer">–</div>
 </div>
 
-<div class="debug" id="debug-panel"></div>
+<!-- UPCOMING -->
+<div class="upcoming-card" id="upcoming-card" style="display:none">
+  <div class="upcoming-title">Próximos partidos hoy</div>
+  <div id="upcoming-list"></div>
+</div>
 
 <script>
-const isDebug = location.search.includes('debug');
-if (isDebug) document.getElementById('debug-panel').style.display = 'block';
-
-// Local clock — ticks every second when live
-let localMinute = null;
-let localSeconds = 0;
 let clockInterval = null;
 
-function startLocalClock(minute) {
-  localMinute = minute;
-  localSeconds = 0;
+function startClock(description) {
   if (clockInterval) clearInterval(clockInterval);
-  clockInterval = setInterval(() => {
-    localSeconds++;
-    if (localSeconds >= 60) {
-      localSeconds = 0;
-      localMinute++;
-    }
-    document.getElementById('clock').textContent = localMinute + "'";
-  }, 1000);
-}
-
-function pct(a, b) {
-  // handle "65%" strings
-  const pa = parseFloat(a) || 0;
-  const pb = parseFloat(b) || 0;
-  if (pa + pb === 0) return 50;
-  return Math.round(pa / (pa + pb) * 100);
+  document.getElementById('clock').textContent = description || '–';
+  document.getElementById('clock').classList.remove('static');
+  document.getElementById('clock-dot').style.display = 'block';
 }
 
 function set(id, val) {
@@ -216,8 +197,38 @@ function set(id, val) {
 }
 
 function setBar(id, h, a) {
+  const ph = parseFloat(h) || 0;
+  const pa = parseFloat(a) || 0;
+  const total = ph + pa || 1;
   const el = document.getElementById(id);
-  if (el) el.style.width = pct(h, a) + '%';
+  if (el) el.style.width = Math.round(ph / total * 100) + '%';
+}
+
+function sportEmoji(sport) {
+  const map = { football: '⚽', tennis: '🎾', basketball: '🏀', hockey: '🏒', baseball: '⚾' };
+  return map[sport] || '🏅';
+}
+
+function renderUpcoming(upcoming) {
+  const card = document.getElementById('upcoming-card');
+  const list = document.getElementById('upcoming-list');
+  if (!upcoming || upcoming.length === 0) { card.style.display = 'none'; return; }
+
+  card.style.display = 'flex';
+  list.innerHTML = upcoming.map(u => `
+    <div class="upcoming-item">
+      <div class="up-time">${u.time}</div>
+      <div class="up-logos">
+        <div class="up-logo"><img src="${u.homeLogo || ''}" onerror="this.style.opacity=0"></div>
+        <div class="up-vs">vs</div>
+        <div class="up-logo"><img src="${u.awayLogo || ''}" onerror="this.style.opacity=0"></div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div class="up-teams">${u.home} – ${u.away}</div>
+        <div class="up-league">${u.league}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
 async function fetchMatch() {
@@ -225,93 +236,85 @@ async function fetchMatch() {
     const res = await fetch('/api/match');
     const data = await res.json();
 
-    if (isDebug) {
-      document.getElementById('debug-panel').textContent = JSON.stringify(data, null, 2);
-    }
-
-    // API / config error
     if (data.error) {
-      document.getElementById('league-name').textContent = 'Error';
-      document.getElementById('footer').textContent = data.error;
+      set('league-name', 'Error de configuración');
+      set('footer', data.error);
       return;
     }
 
-    // No matches today
+    renderUpcoming(data.upcoming);
+
     if (!data.match) {
-      document.getElementById('league-name').textContent = 'Sin partidos en vivo';
-      document.getElementById('footer').textContent = data.message || 'Vuelve durante la jornada';
-      document.getElementById('ldot').style.background = 'rgba(255,255,255,.3)';
-      document.getElementById('ldot').style.animation = 'none';
+      set('league-name', 'Sin partidos en vivo');
+      document.getElementById('ldot').classList.add('off');
+      set('footer', data.message || 'Vuelve más tarde');
       return;
     }
 
     const m = data.match;
-    const isLive = m.isLive;
 
-    // League
-    document.getElementById('league-name').textContent =
-      m.league + (isLive ? ' · En vivo' : ' · ' + m.statusLong);
-    document.getElementById('ldot').style.background = isLive ? '#ff4d4d' : 'rgba(255,255,255,.3)';
-    document.getElementById('ldot').style.animation = isLive ? '' : 'none';
+    // League + sport badge
+    set('league-name', m.league);
+    const badge = document.getElementById('sport-badge');
+    badge.style.display = 'inline-block';
+    badge.textContent = sportEmoji(m.sport) + ' ' + m.sport.toUpperCase();
+
+    const ldot = document.getElementById('ldot');
+    ldot.classList.toggle('off', !m.isLive);
 
     // Show scoreboard
     document.getElementById('scoreboard').style.visibility = 'visible';
 
-    // Teams & score
+    // Teams
     document.getElementById('home-logo').src = m.home.logo || '';
-    set('home-name',  m.home.name);
-    set('away-logo',  m.away.logo);
     document.getElementById('away-logo').src = m.away.logo || '';
-    set('away-name',  m.away.name);
+    set('home-name', m.home.name);
+    set('away-name', m.away.name);
     set('home-score', m.home.score);
     set('away-score', m.away.score);
 
     // Clock
-    if (isLive && m.minute !== null) {
-      startLocalClock(m.minute);
-      document.getElementById('clock-dot').style.display = 'block';
+    const clock = document.getElementById('clock');
+    const clockDot = document.getElementById('clock-dot');
+    if (m.isLive && m.minute) {
+      clock.textContent = m.minute;
+      clock.classList.remove('static');
+      clockDot.style.display = 'block';
     } else {
-      if (clockInterval) clearInterval(clockInterval);
-      document.getElementById('clock').textContent = m.statusLong || m.status;
-      document.getElementById('clock').style.color = 'rgba(255,255,255,.4)';
-      document.getElementById('clock').style.animation = 'none';
-      document.getElementById('clock-dot').style.display = 'none';
+      clock.textContent = m.statusLong || m.status;
+      clock.classList.add('static');
+      clockDot.style.display = 'none';
     }
 
     // Stats
     const s = m.stats;
-    set('poss-h',    s.possessionHome || '–');
-    set('poss-a',    s.possessionAway || '–');
-    set('shots-h',   s.shotsHome ?? '–');
-    set('shots-a',   s.shotsAway ?? '–');
-    set('fouls-h',   s.foulsHome ?? '–');
-    set('fouls-a',   s.foulsAway ?? '–');
-    set('corners-h', s.cornersHome ?? '–');
-    set('corners-a', s.cornersAway ?? '–');
-    set('yellow-h',  s.yellowHome ?? '–');
-    set('yellow-a',  s.yellowAway ?? '–');
+    const hasStats = Object.values(s).some(v => v !== null);
+    document.getElementById('stats').style.opacity = hasStats ? '1' : '0.3';
 
-    // Bars
+    set('poss-h', s.possessionHome);  set('poss-a', s.possessionAway);
+    set('shots-h', s.shotsHome);      set('shots-a', s.shotsAway);
+    set('fouls-h', s.foulsHome);      set('fouls-a', s.foulsAway);
+    set('corners-h', s.cornersHome);  set('corners-a', s.cornersAway);
+    set('yellow-h', s.yellowHome);    set('yellow-a', s.yellowAway);
+
     const ph = parseFloat(s.possessionHome) || 50;
     document.getElementById('bar-poss').style.width = ph + '%';
-    setBar('bar-shots',   s.shotsHome,   s.shotsAway);
-    setBar('bar-fouls',   s.foulsHome,   s.foulsAway);
+    setBar('bar-shots', s.shotsHome, s.shotsAway);
+    setBar('bar-fouls', s.foulsHome, s.foulsAway);
     setBar('bar-corners', s.cornersHome, s.cornersAway);
-    setBar('bar-yellow',  s.yellowHome,  s.yellowAway);
+    setBar('bar-yellow', s.yellowHome, s.yellowAway);
 
-    // Footer
+    const liveCount = data.totalLive > 1 ? ` · ${data.totalLive} en vivo` : '';
     const updated = new Date(m.updated).toLocaleTimeString('es-ES');
-    document.getElementById('footer').textContent = 'API actualizada: ' + updated + ' · refresco: 60s';
+    set('footer', `Actualizado: ${updated}${liveCount} · refresco: 60s`);
 
   } catch (e) {
-    document.getElementById('footer').textContent = 'Error de red: ' + e.message;
-    if (isDebug) document.getElementById('debug-panel').textContent = e.stack;
+    set('footer', 'Error de red: ' + e.message);
   }
 }
 
 fetchMatch();
-setInterval(fetchMatch, 60000); // API updates every 60s
+setInterval(fetchMatch, 60000);
 </script>
-
 </body>
 </html>
