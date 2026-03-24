@@ -96,6 +96,17 @@ html, body {
   font-size: 0.68rem; letter-spacing: 1px;
   color: rgba(255,255,255,.35); text-align: center; margin-top: 4px;
 }
+.refresh-btn {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.45);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 2px; font-size: 0.72rem;
+  padding: 6px 20px; border-radius: 20px;
+  cursor: pointer; transition: background .2s, color .2s;
+}
+.refresh-btn:hover { background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.8); }
+.refresh-btn:disabled { opacity: .4; cursor: default; }
 .footer { font-size: 0.58rem; letter-spacing: 1px; color: rgba(255,255,255,.22); text-transform: uppercase; }
 </style>
 </head>
@@ -158,13 +169,14 @@ html, body {
 
   <div id="upcoming-view" style="display:none; width:100%;">
     <div class="upcoming-mode">
-      <div class="upcoming-header" id="upcoming-header">Próximos partidos hoy</div>
+      <div class="upcoming-header">Próximos partidos hoy</div>
       <div id="upcoming-list"></div>
       <div class="countdown" id="countdown"></div>
     </div>
   </div>
 
-  <div class="footer" id="footer">–</div>
+  <button class="refresh-btn" id="refresh-btn" onclick="handleRefresh()">↻ ACTUALIZAR</button>
+  <div class="footer" id="footer">Pulsa actualizar para cargar datos</div>
 </div>
 
 <script>
@@ -213,11 +225,11 @@ function renderUpcoming(upcoming) {
       </div>
     </div>
   `).join('');
-  if (upcoming[0] && upcoming[0].timestamp) {
+  if (upcoming[0]?.timestamp) {
     set('countdown', timeUntil(upcoming[0].timestamp));
-    setInterval(() => set('countdown', timeUntil(upcoming[0].timestamp)), 30000);
   }
 }
+
 async function fetchMatch() {
   try {
     const res = await fetch('/api/match');
@@ -265,13 +277,23 @@ async function fetchMatch() {
     setBar('bar-corners', s.cornersHome, s.cornersAway);
     setBar('bar-yellow', s.yellowHome, s.yellowAway);
     const liveCount = data.totalLive > 1 ? ` · ${data.totalLive} en vivo` : '';
-    set('footer', `Actualizado: ${new Date(m.updated).toLocaleTimeString('es-ES')}${liveCount} · refresco 60s`);
+    set('footer', `Actualizado: ${new Date(m.updated).toLocaleTimeString('es-ES')}${liveCount}`);
   } catch (e) {
     set('footer', 'Error de red: ' + e.message);
   }
 }
+
+async function handleRefresh() {
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  btn.textContent = '↻ CARGANDO...';
+  await fetchMatch();
+  btn.disabled = false;
+  btn.textContent = '↻ ACTUALIZAR';
+}
+
+// Load once on open
 fetchMatch();
-setInterval(fetchMatch, 60000);
 </script>
 </body>
 </html>
