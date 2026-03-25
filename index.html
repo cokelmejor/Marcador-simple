@@ -24,25 +24,14 @@ html, body {
   display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
 .league-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.ldot {
-  width: 7px; height: 7px; border-radius: 50%; background: #ff4d4d;
-  animation: pulse 1.8s ease-in-out infinite; flex-shrink: 0;
-}
+.ldot { width: 7px; height: 7px; border-radius: 50%; background: #ff4d4d; animation: pulse 1.8s ease-in-out infinite; flex-shrink: 0; }
 .ldot.off { background: rgba(255,255,255,.3); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
 .league-name { font-size: 0.76rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
-.sport-badge {
-  font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  background: rgba(245,197,24,0.15); color: #f5c518;
-  padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(245,197,24,0.3);
-}
+.sport-badge { font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: rgba(245,197,24,0.15); color: #f5c518; padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(245,197,24,0.3); }
 .scoreboard { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
 .team { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
-.logo-wrap {
-  width: 68px; height: 68px; background: #fff; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  padding: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); overflow: hidden;
-}
+.logo-wrap { width: 68px; height: 68px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); overflow: hidden; }
 .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
 .team-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1.5px; text-align: center; }
 .center { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
@@ -62,67 +51,36 @@ html, body {
 .bar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; position: relative; }
 .bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,.55); border-radius: 3px; transition: width .7s ease; }
 .upcoming-mode { width: 100%; display: flex; flex-direction: column; gap: 0; }
-.upcoming-header {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.72rem; letter-spacing: 3px;
-  color: rgba(255,255,255,.35); text-transform: uppercase;
-  text-align: center; margin-bottom: 14px;
-}
-.upcoming-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
+.upcoming-header { font-family: 'Bebas Neue', sans-serif; font-size: 0.72rem; letter-spacing: 3px; color: rgba(255,255,255,.35); text-transform: uppercase; text-align: center; margin-bottom: 14px; }
+.upcoming-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
 .upcoming-item:last-child { border-bottom: none; }
-.up-time {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem; letter-spacing: 2px; color: #f5c518;
-  min-width: 48px; text-align: center; flex-shrink: 0;
-}
+.up-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #f5c518; min-width: 48px; text-align: center; flex-shrink: 0; }
 .up-match { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .up-team { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; flex-shrink: 0; }
-.up-logo {
-  width: 36px; height: 36px; background: #fff; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  padding: 3px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.4);
-}
+.up-logo { width: 36px; height: 36px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
 .up-logo img { width: 100%; height: 100%; object-fit: contain; }
 .up-tname { font-size: 0.68rem; font-weight: 700; text-align: center; color: rgba(255,255,255,.8); line-height: 1.1; }
 .up-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .up-vs { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: rgba(255,255,255,.25); letter-spacing: 2px; }
 .up-league { font-size: 0.58rem; color: rgba(255,255,255,.3); letter-spacing: .5px; text-align: center; }
-.countdown {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.68rem; letter-spacing: 1px;
-  color: rgba(255,255,255,.35); text-align: center; margin-top: 4px;
-}
-.refresh-btn {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.45);
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 2px; font-size: 0.72rem;
-  padding: 6px 20px; border-radius: 20px;
-  cursor: pointer; transition: background .2s, color .2s;
-}
+.countdown { font-family: 'Bebas Neue', sans-serif; font-size: 0.68rem; letter-spacing: 1px; color: rgba(255,255,255,.35); text-align: center; margin-top: 4px; }
+.refresh-btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.45); font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 0.72rem; padding: 6px 20px; border-radius: 20px; cursor: pointer; transition: background .2s, color .2s; }
 .refresh-btn:hover { background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.8); }
 .refresh-btn:disabled { opacity: .4; cursor: default; }
 .footer { font-size: 0.58rem; letter-spacing: 1px; color: rgba(255,255,255,.22); text-transform: uppercase; }
 </style>
 </head>
 <body>
-
 <div class="card">
   <div class="league-row">
     <div class="ldot" id="ldot"></div>
     <div class="league-name" id="league-name">Conectando...</div>
     <div class="sport-badge" id="sport-badge" style="display:none"></div>
   </div>
-
   <div id="live-view" style="display:none; width:100%; flex-direction:column; align-items:center; gap:20px;">
     <div class="scoreboard">
       <div class="team">
-        <div class="logo-wrap"><img id="home-logo" src="" alt="" onerror="this.style.opacity=0"></div>
+        <div class="logo-wrap"><img id="home-logo" src="" alt=""></div>
         <div class="team-name" id="home-name">–</div>
       </div>
       <div class="center">
@@ -133,7 +91,7 @@ html, body {
         </div>
       </div>
       <div class="team">
-        <div class="logo-wrap"><img id="away-logo" src="" alt="" onerror="this.style.opacity=0"></div>
+        <div class="logo-wrap"><img id="away-logo" src="" alt=""></div>
         <div class="team-name" id="away-name">–</div>
       </div>
     </div>
@@ -166,7 +124,6 @@ html, body {
       </div>
     </div>
   </div>
-
   <div id="upcoming-view" style="display:none; width:100%;">
     <div class="upcoming-mode">
       <div class="upcoming-header">Próximos partidos hoy</div>
@@ -174,7 +131,6 @@ html, body {
       <div class="countdown" id="countdown"></div>
     </div>
   </div>
-
   <button class="refresh-btn" id="refresh-btn" onclick="handleRefresh()">↻ ACTUALIZAR</button>
   <div class="footer" id="footer">Pulsa actualizar para cargar datos</div>
 </div>
@@ -197,9 +153,41 @@ function timeUntil(ts) {
   if (diff <= 0) return 'Comenzando...';
   const h = Math.floor(diff / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
-  if (h > 0) return `En ${h}h ${m}m`;
-  return `En ${m} minutos`;
+  return h > 0 ? `En ${h}h ${m}m` : `En ${m} minutos`;
 }
+
+// ── Reloj interpolado ──────────────────────────────────────────
+let clockState = null;
+let clockInterval = null;
+
+function startClock(m) {
+  if (clockInterval) clearInterval(clockInterval);
+  const clock    = document.getElementById('clock');
+  const clockDot = document.getElementById('clock-dot');
+
+  if (!m.isLive || m.isHalfTime || m.minuteNum === null) {
+    clock.textContent = m.statusLong || m.minute || m.status;
+    clock.classList.add('static');
+    clockDot.style.display = 'none';
+    return;
+  }
+
+  clockState = { minuteNum: m.minuteNum, receivedAt: m.updatedTs || Date.now() };
+  clock.classList.remove('static');
+  clockDot.style.display = 'block';
+
+  function tick() {
+    if (!clockState) return;
+    const elapsed = Math.floor((Date.now() - clockState.receivedAt) / 1000);
+    const total   = clockState.minuteNum * 60 + elapsed;
+    const mins    = Math.min(Math.floor(total / 60), 99);
+    const secs    = total % 60;
+    clock.textContent = `${mins}'${String(secs).padStart(2,'0')}`;
+  }
+  tick();
+  clockInterval = setInterval(tick, 1000);
+}
+
 function renderUpcoming(upcoming) {
   const list = document.getElementById('upcoming-list');
   if (!upcoming || upcoming.length === 0) {
@@ -225,20 +213,19 @@ function renderUpcoming(upcoming) {
       </div>
     </div>
   `).join('');
-  if (upcoming[0]?.timestamp) {
-    set('countdown', timeUntil(upcoming[0].timestamp));
-  }
+  if (upcoming[0]?.timestamp) set('countdown', timeUntil(upcoming[0].timestamp));
 }
 
 async function fetchMatch() {
   try {
-    const res = await fetch('/api/match');
+    const res  = await fetch('/api/match');
     const data = await res.json();
     if (data.error) { set('league-name', 'Error'); set('footer', data.error); return; }
     if (!data.match) {
+      if (clockInterval) clearInterval(clockInterval);
       document.getElementById('ldot').classList.add('off');
       set('league-name', 'Sin partidos en vivo');
-      document.getElementById('live-view').style.display = 'none';
+      document.getElementById('live-view').style.display     = 'none';
       document.getElementById('upcoming-view').style.display = 'block';
       renderUpcoming(data.upcoming);
       set('footer', 'Actualizado: ' + new Date().toLocaleTimeString('es-ES'));
@@ -250,36 +237,40 @@ async function fetchMatch() {
     const badge = document.getElementById('sport-badge');
     badge.style.display = 'inline-block';
     badge.textContent = sportEmoji(m.sport) + ' ' + m.sport.toUpperCase();
-    document.getElementById('live-view').style.display = 'flex';
+    document.getElementById('live-view').style.display     = 'flex';
     document.getElementById('upcoming-view').style.display = 'none';
-    document.getElementById('home-logo').src = m.home.logo || '';
-    document.getElementById('away-logo').src = m.away.logo || '';
-    set('home-name', m.home.name); set('away-name', m.away.name);
-    set('home-score', m.home.score); set('away-score', m.away.score);
-    const clock = document.getElementById('clock');
-    if (m.isLive && m.minute) {
-      clock.textContent = m.minute; clock.classList.remove('static');
-      document.getElementById('clock-dot').style.display = 'block';
-    } else {
-      clock.textContent = m.statusLong || m.status; clock.classList.add('static');
-      document.getElementById('clock-dot').style.display = 'none';
-    }
+
+    // Logos via proxy
+    const homeLogoEl = document.getElementById('home-logo');
+    const awayLogoEl = document.getElementById('away-logo');
+    if (m.home.logo) { homeLogoEl.src = m.home.logo; homeLogoEl.style.opacity = 1; }
+    if (m.away.logo) { awayLogoEl.src = m.away.logo; awayLogoEl.style.opacity = 1; }
+
+    set('home-name',  m.home.name);
+    set('away-name',  m.away.name);
+    set('home-score', m.home.score);
+    set('away-score', m.away.score);
+
+    startClock(m);
+
     const s = m.stats;
-    set('poss-h', s.possessionHome); set('poss-a', s.possessionAway);
-    set('shots-h', s.shotsHome);     set('shots-a', s.shotsAway);
-    set('fouls-h', s.foulsHome);     set('fouls-a', s.foulsAway);
-    set('corners-h', s.cornersHome); set('corners-a', s.cornersAway);
-    set('yellow-h', s.yellowHome);   set('yellow-a', s.yellowAway);
+    set('poss-h',    s.possessionHome); set('poss-a',    s.possessionAway);
+    set('shots-h',   s.shotsHome);      set('shots-a',   s.shotsAway);
+    set('fouls-h',   s.foulsHome);      set('fouls-a',   s.foulsAway);
+    set('corners-h', s.cornersHome);    set('corners-a', s.cornersAway);
+    set('yellow-h',  s.yellowHome);     set('yellow-a',  s.yellowAway);
+
     const ph = parseFloat(s.possessionHome) || 50;
     document.getElementById('bar-poss').style.width = ph + '%';
-    setBar('bar-shots', s.shotsHome, s.shotsAway);
-    setBar('bar-fouls', s.foulsHome, s.foulsAway);
+    setBar('bar-shots',   s.shotsHome,   s.shotsAway);
+    setBar('bar-fouls',   s.foulsHome,   s.foulsAway);
     setBar('bar-corners', s.cornersHome, s.cornersAway);
-    setBar('bar-yellow', s.yellowHome, s.yellowAway);
+    setBar('bar-yellow',  s.yellowHome,  s.yellowAway);
+
     const liveCount = data.totalLive > 1 ? ` · ${data.totalLive} en vivo` : '';
     set('footer', `Actualizado: ${new Date(m.updated).toLocaleTimeString('es-ES')}${liveCount}`);
-  } catch (e) {
-    set('footer', 'Error de red: ' + e.message);
+  } catch (err) {
+    set('footer', 'Error de red: ' + err.message);
   }
 }
 
@@ -292,7 +283,6 @@ async function handleRefresh() {
   btn.textContent = '↻ ACTUALIZAR';
 }
 
-// Load once on open
 fetchMatch();
 </script>
 </body>
