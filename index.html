@@ -165,23 +165,48 @@ function startClock(m) {
   const clock    = document.getElementById('clock');
   const clockDot = document.getElementById('clock-dot');
 
-  if (!m.isLive || m.isHalfTime || m.minuteNum === null) {
-    clock.textContent = m.statusLong || m.minute || m.status;
+  if (!m.isLive || m.isHalfTime) {
+    // Partido no en juego: mostrar texto estático
+    const label = m.isHalfTime
+      ? 'DESCANSO'
+      : (m.statusLong || m.minute || m.status || '–');
+    clock.textContent = label;
     clock.classList.add('static');
     clockDot.style.display = 'none';
     return;
   }
 
-  clockState = { minuteNum: m.minuteNum, receivedAt: m.updatedTs || Date.now() };
   clock.classList.remove('static');
   clockDot.style.display = 'block';
 
+  if (m.periodStart) {
+    // Modo preciso: calculamos desde el timestamp de inicio del período.
+    // No depende de sincronía entre relojes de servidor y cliente.
+    const periodOffsetMin = m.period === 2 ? 45 : (m.period === 3 ? 90 : (m.period === 4 ? 105 : 0));
+    clockState = { periodStart: m.periodStart, periodOffsetMin };
+  } else if (m.minuteNum !== null) {
+    // Modo aproximado: minuto conocido + tiempo transcurrido desde que el cliente recibió los datos
+    clockState = { minuteNum: m.minuteNum, receivedAt: Date.now() };
+  } else {
+    // Sin información de tiempo
+    clock.textContent = m.statusLong || m.status || '–';
+    clock.classList.add('static');
+    clockDot.style.display = 'none';
+    return;
+  }
+
   function tick() {
     if (!clockState) return;
-    const elapsed = Math.floor((Date.now() - clockState.receivedAt) / 1000);
-    const total   = clockState.minuteNum * 60 + elapsed;
-    const mins    = Math.min(Math.floor(total / 60), 99);
-    const secs    = total % 60;
+    let total;
+    if (clockState.periodStart !== undefined) {
+      const secondsInPeriod = Math.floor(Date.now() / 1000) - clockState.periodStart;
+      total = clockState.periodOffsetMin * 60 + Math.max(0, secondsInPeriod);
+    } else {
+      const elapsed = Math.floor((Date.now() - clockState.receivedAt) / 1000);
+      total = clockState.minuteNum * 60 + elapsed;
+    }
+    const mins = Math.min(Math.floor(total / 60), 99);
+    const secs = total % 60;
     clock.textContent = `${mins}'${String(secs).padStart(2,'0')}`;
   }
   tick();
@@ -243,8 +268,18 @@ async function fetchMatch() {
     // Logos via proxy
     const homeLogoEl = document.getElementById('home-logo');
     const awayLogoEl = document.getElementById('away-logo');
-    if (m.home.logo) { homeLogoEl.src = m.home.logo; homeLogoEl.style.opacity = 1; }
-    if (m.away.logo) { awayLogoEl.src = m.away.logo; awayLogoEl.style.opacity = 1; }
+    if (m.home.logo) {
+      homeLogoEl.onerror = function() { this.style.display = 'none'; };
+      homeLogoEl.onload  = function() { this.style.display = ''; this.style.opacity = 1; };
+      homeLogoEl.style.display = '';
+      homeLogoEl.src = m.home.logo;
+    }
+    if (m.away.logo) {
+      awayLogoEl.onerror = function() { this.style.display = 'none'; };
+      awayLogoEl.onload  = function() { this.style.display = ''; this.style.opacity = 1; };
+      awayLogoEl.style.display = '';
+      awayLogoEl.src = m.away.logo;
+    }
 
     set('home-name',  m.home.name);
     set('away-name',  m.away.name);
@@ -253,15 +288,15 @@ async function fetchMatch() {
 
     startClock(m);
 
-    const s = m.stats;
+    const s = m.stats || {};
     set('poss-h',    s.possessionHome); set('poss-a',    s.possessionAway);
     set('shots-h',   s.shotsHome);      set('shots-a',   s.shotsAway);
     set('fouls-h',   s.foulsHome);      set('fouls-a',   s.foulsAway);
     set('corners-h', s.cornersHome);    set('corners-a', s.cornersAway);
     set('yellow-h',  s.yellowHome);     set('yellow-a',  s.yellowAway);
 
-    const ph = parseFloat(s.possessionHome) || 50;
-    document.getElementById('bar-poss').style.width = ph + '%';
+    const ph = parseFloat(s.possessionHome);
+    document.getElementById('bar-poss').style.width = (isNaN(ph) ? 50 : ph) + '%';
     setBar('bar-shots',   s.shotsHome,   s.shotsAway);
     setBar('bar-fouls',   s.foulsHome,   s.foulsAway);
     setBar('bar-corners', s.cornersHome, s.cornersAway);

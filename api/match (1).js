@@ -7,7 +7,11 @@ export default async function handler(req, res) {
   if (req.method === 'GET' && req.query.logo) {
     try {
       const imgRes = await fetch(req.query.logo, {
-        headers: { 'User-Agent': 'Mozilla/5.0' }
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Referer': 'https://www.sofascore.com/',
+          'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8'
+        }
       });
       if (!imgRes.ok) return res.status(404).end();
       const buf = await imgRes.arrayBuffer();
@@ -109,12 +113,20 @@ export default async function handler(req, res) {
         { headers: HEADERS }
       );
       const statsData = await statsRes.json();
-      const groups = statsData.statistics?.[0]?.groups || [];
 
-      function findStat(groups, name) {
+      // Prefer the "ALL" period; fall back to the last or first available
+      const allPeriods = statsData.statistics || [];
+      const period =
+        allPeriods.find(p => (p.period || '').toUpperCase() === 'ALL') ||
+        allPeriods[allPeriods.length - 1] ||
+        allPeriods[0];
+      const groups = period?.groups || [];
+
+      function findStat(groups, ...names) {
         for (const g of groups) {
           for (const item of g.statisticsItems || []) {
-            if (item.name?.toLowerCase().includes(name.toLowerCase())) {
+            const n = (item.name || '').toLowerCase();
+            if (names.some(name => n.includes(name.toLowerCase()))) {
               return { home: item.home ?? null, away: item.away ?? null };
             }
           }
@@ -122,10 +134,10 @@ export default async function handler(req, res) {
         return { home: null, away: null };
       }
 
-      const poss    = findStat(groups, 'Ball possession');
-      const shots   = findStat(groups, 'Shots on target');
+      const poss    = findStat(groups, 'Ball possession', 'possession');
+      const shots   = findStat(groups, 'Shots on target', 'on target');
       const fouls   = findStat(groups, 'Fouls');
-      const corners = findStat(groups, 'Corner kicks');
+      const corners = findStat(groups, 'Corner kicks', 'corners');
       const yellow  = findStat(groups, 'Yellow cards');
 
       stats = {
@@ -135,16 +147,29 @@ export default async function handler(req, res) {
         cornersHome:    corners.home, cornersAway:    corners.away,
         yellowHome:     yellow.home,  yellowAway:     yellow.away,
       };
-    } catch (_) {
+    } catch (statsErr) {
       // Si las stats fallan, seguimos sin ellas
+      console.error('Stats fetch failed:', statsErr.message);
     }
 
     // 4. Extraer minuto numérico para que el frontend pueda interpolar
     let minuteRaw = status.description || null;
     let minuteNum = null;
+
+    // Only extract minute if description looks like a game time ("23'", "45+2'", "90")
+    // Avoid extracting "1" from "1st Half" etc.
     if (minuteRaw) {
-      const m = minuteRaw.match(/(\d+)/);
-      if (m) minuteNum = parseInt(m[1], 10);
+      const mm = minuteRaw.match(/^(\d+)(?:\+\d+)?[''']?$/);
+      if (mm) minuteNum = parseInt(mm[1], 10);
+    }
+
+    // Fallback: calculate from period start timestamp (most accurate)
+    const periodStart = e.time?.currentPeriodStartTimestamp || null;
+    const periodNum   = e.time?.period || null;
+
+    // If we still don't have minuteNum, try e.time.played (seconds)
+    if (minuteNum === null && e.time?.played !== undefined) {
+      minuteNum = Math.floor(e.time.played / 60);
     }
 
     res.status(200).json({
@@ -155,12 +180,18 @@ export default async function handler(req, res) {
         leagueLogo: proxyLogo(tournament.uniqueTournament?.id
           ? `https://api.sofascore.app/api/v1/unique-tournament/${tournament.uniqueTournament.id}/image`
           : null),
-        minute:     minuteRaw,
-        minuteNum:  minuteNum,       // número puro para interpolar el reloj
-        status:     status.type || '–',
-        statusLong: status.description || status.type || '–',
-        isLive:     status.type === 'inprogress',
-        isHalfTime: status.type === 'halftime',
+        minute:      minuteRaw,
+        minuteNum:   minuteNum,       // número puro para interpolar el reloj
+        periodStart: periodStart,     // Unix timestamp (s) inicio del período actual
+        period:      periodNum,       // 1 = primera parte, 2 = segunda, etc.
+        status:      status.type || '–',
+        statusLong:  status.description || status.type || '–',
+        isLive:      ['inprogress', 'live', '1h', '2h', 'overtime', 'ext'].includes(
+                       (status.type || '').toLowerCase()
+                     ),
+        isHalfTime:  ['halftime', 'pause', 'ht'].includes(
+                       (status.type || '').toLowerCase()
+                     ),
         home: {
           name:  homeTeam.name || homeTeam.shortName || '–',
           logo:  proxyLogo(homeTeam.id ? `https://api.sofascore.app/api/v1/team/${homeTeam.id}/image` : null),
