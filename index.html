@@ -7,13 +7,16 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
-  width: 100%; height: 100%; overflow: hidden;
+  width: 100%; min-height: 100%; overflow-x: hidden;
   background: linear-gradient(150deg, #1e60b0 0%, #0e3474 45%, #071a40 100%);
   font-family: 'Barlow Condensed', sans-serif;
   color: #fff;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 14px;
+  padding: 20px 0;
 }
+
+/* ─── CARD ─────────────────────────────────────────── */
 .card {
   background: rgba(8,22,60,0.85);
   border-radius: 24px;
@@ -23,25 +26,125 @@ html, body {
   width: 92%; max-width: 520px;
   display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
+
+/* ─── LEAGUE ROW ────────────────────────────────────── */
 .league-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.ldot { width: 7px; height: 7px; border-radius: 50%; background: #ff4d4d; animation: pulse 1.8s ease-in-out infinite; flex-shrink: 0; }
+.ldot {
+  width: 7px; height: 7px; border-radius: 50%; background: #ff4d4d;
+  animation: pulse 1.8s ease-in-out infinite; flex-shrink: 0;
+}
 .ldot.off { background: rgba(255,255,255,.3); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
 .league-name { font-size: 0.76rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
-.sport-badge { font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; background: rgba(245,197,24,0.15); color: #f5c518; padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(245,197,24,0.3); }
+.sport-badge {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  background: rgba(245,197,24,0.15); color: #f5c518;
+  padding: 2px 8px; border-radius: 20px; border: 1px solid rgba(245,197,24,0.3);
+}
+
+/* ─── SCOREBOARD ────────────────────────────────────── */
 .scoreboard { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
 .team { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
-.logo-wrap { width: 68px; height: 68px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); overflow: hidden; }
+.logo-wrap {
+  width: 68px; height: 68px; background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); overflow: hidden;
+  transition: transform 0.3s;
+}
 .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
 .team-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1.5px; text-align: center; }
-.center { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
-.score { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; letter-spacing: 6px; line-height: 1; }
+
+.center { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+.score-wrap { position: relative; }
+.score { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; letter-spacing: 6px; line-height: 1; transition: color 0.3s; }
 .score .sep { opacity: .35; font-size: 2.6rem; }
+
+/* ─── CLOCK ─────────────────────────────────────────── */
 .clock-wrap { display: flex; align-items: center; gap: 5px; }
 .clock-dot { width: 5px; height: 5px; border-radius: 50%; background: #ff4d4d; animation: pulse 1.8s ease-in-out infinite; }
 .clock { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 2px; color: #ff6b6b; }
 .clock.static { color: rgba(255,255,255,.4); }
+.clock.added-time { color: #f5c518 !important; }
+.added-time-badge {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  background: rgba(245,197,24,0.15); color: #f5c518;
+  padding: 1px 7px; border-radius: 20px; border: 1px solid rgba(245,197,24,0.35);
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── VAR BANNER ────────────────────────────────────── */
+.var-banner {
+  width: 100%;
+  background: rgba(255, 60, 60, 0.15);
+  border: 1px solid rgba(255, 60, 60, 0.4);
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: flex; align-items: center; gap: 8px;
+  animation: varPulse 1.5s ease-in-out infinite;
+}
+@keyframes varPulse {
+  0%,100% { background: rgba(255, 60, 60, 0.15); border-color: rgba(255,60,60,0.4); }
+  50%     { background: rgba(255, 60, 60, 0.28); border-color: rgba(255,60,60,0.7); }
+}
+.var-icon { font-size: 1.1rem; }
+.var-text { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #ff7070; }
+
+/* ─── GOAL ANIMATION ────────────────────────────────── */
+@keyframes goalBurst {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(1.18); color: #f5c518; }
+  40%  { transform: scale(0.95); }
+  60%  { transform: scale(1.08); color: #f5c518; }
+  80%  { transform: scale(0.98); }
+  100% { transform: scale(1); color: inherit; }
+}
+.goal-anim { animation: goalBurst 0.9s ease; }
+
+.goal-flash {
+  position: fixed; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(245,197,24,0.18) 0%, transparent 70%);
+  animation: flashOut 1s ease forwards;
+  z-index: 999;
+}
+@keyframes flashOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ─── EVENTS (scorers / cards) ──────────────────────── */
+.events-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+.events-col { display: flex; flex-direction: column; gap: 3px; }
+.events-col.right { align-items: flex-end; }
+
+.event-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.68rem; color: rgba(255,255,255,0.7);
+  line-height: 1.2;
+}
+.events-col.right .event-item { flex-direction: row-reverse; }
+.event-min {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.72rem; color: rgba(255,255,255,0.4);
+  min-width: 24px; text-align: center; flex-shrink: 0;
+}
+.event-icon { flex-shrink: 0; font-size: 0.75rem; }
+.event-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+.event-badge {
+  font-size: 0.52rem; font-weight: 700; letter-spacing: 0.5px;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4);
+  padding: 0 4px; border-radius: 4px;
+}
+
+/* ─── DIVIDER ───────────────────────────────────────── */
 .divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); }
+
+/* ─── STATS ─────────────────────────────────────────── */
 .stats { width: 100%; display: flex; flex-direction: column; gap: 8px; }
 .stat-row { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; }
 .sv { font-size: 0.85rem; font-weight: 700; }
@@ -50,52 +153,126 @@ html, body {
 .stat-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.4); }
 .bar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 3px; overflow: hidden; position: relative; }
 .bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,.55); border-radius: 3px; transition: width .7s ease; }
+
+/* ─── UPCOMING ──────────────────────────────────────── */
 .upcoming-mode { width: 100%; display: flex; flex-direction: column; gap: 0; }
-.upcoming-header { font-family: 'Bebas Neue', sans-serif; font-size: 0.72rem; letter-spacing: 3px; color: rgba(255,255,255,.35); text-transform: uppercase; text-align: center; margin-bottom: 14px; }
-.upcoming-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+.upcoming-header {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.72rem; letter-spacing: 3px;
+  color: rgba(255,255,255,.35); text-transform: uppercase;
+  text-align: center; margin-bottom: 14px;
+}
+
+/* Competition group */
+.comp-group { margin-bottom: 14px; }
+.comp-header {
+  display: flex; align-items: center; gap: 7px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 6px;
+}
+.comp-logo {
+  width: 18px; height: 18px; object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+}
+.comp-name {
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.45);
+}
+
+.upcoming-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
 .upcoming-item:last-child { border-bottom: none; }
-.up-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #f5c518; min-width: 48px; text-align: center; flex-shrink: 0; }
+.up-time {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem; letter-spacing: 2px; color: #f5c518;
+  min-width: 48px; text-align: center; flex-shrink: 0;
+}
 .up-match { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .up-team { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; flex-shrink: 0; }
-.up-logo { width: 36px; height: 36px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+.up-logo {
+  width: 36px; height: 36px; background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 3px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
 .up-logo img { width: 100%; height: 100%; object-fit: contain; }
 .up-tname { font-size: 0.68rem; font-weight: 700; text-align: center; color: rgba(255,255,255,.8); line-height: 1.1; }
 .up-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .up-vs { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: rgba(255,255,255,.25); letter-spacing: 2px; }
-.up-league { font-size: 0.58rem; color: rgba(255,255,255,.3); letter-spacing: .5px; text-align: center; }
-.countdown { font-family: 'Bebas Neue', sans-serif; font-size: 0.68rem; letter-spacing: 1px; color: rgba(255,255,255,.35); text-align: center; margin-top: 4px; }
-.refresh-btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.45); font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 0.72rem; padding: 6px 20px; border-radius: 20px; cursor: pointer; transition: background .2s, color .2s; }
+.countdown {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.68rem; letter-spacing: 1px;
+  color: rgba(255,255,255,.35); text-align: center; margin-top: 4px;
+}
+
+/* ─── MISC ──────────────────────────────────────────── */
+.refresh-btn {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.45);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 2px; font-size: 0.72rem;
+  padding: 6px 20px; border-radius: 20px;
+  cursor: pointer; transition: background .2s, color .2s;
+}
 .refresh-btn:hover { background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.8); }
 .refresh-btn:disabled { opacity: .4; cursor: default; }
 .footer { font-size: 0.58rem; letter-spacing: 1px; color: rgba(255,255,255,.22); text-transform: uppercase; }
 </style>
 </head>
 <body>
+
 <div class="card">
   <div class="league-row">
     <div class="ldot" id="ldot"></div>
     <div class="league-name" id="league-name">Conectando...</div>
     <div class="sport-badge" id="sport-badge" style="display:none"></div>
   </div>
+
+  <!-- VAR Banner -->
+  <div class="var-banner" id="var-banner" style="display:none">
+    <span class="var-icon">📹</span>
+    <span class="var-text" id="var-text">Revisión VAR en curso</span>
+  </div>
+
+  <!-- Live view -->
   <div id="live-view" style="display:none; width:100%; flex-direction:column; align-items:center; gap:20px;">
     <div class="scoreboard">
       <div class="team">
-        <div class="logo-wrap"><img id="home-logo" src="" alt=""></div>
+        <div class="logo-wrap" id="home-logo-wrap"><img id="home-logo" src="" alt="" onerror="this.style.opacity=0"></div>
         <div class="team-name" id="home-name">–</div>
       </div>
+
       <div class="center">
-        <div class="score"><span id="home-score">0</span><span class="sep"> – </span><span id="away-score">0</span></div>
+        <div class="score-wrap">
+          <div class="score" id="score-display">
+            <span id="home-score">0</span><span class="sep"> – </span><span id="away-score">0</span>
+          </div>
+        </div>
         <div class="clock-wrap">
           <div class="clock-dot" id="clock-dot"></div>
           <div class="clock" id="clock">–</div>
         </div>
+        <div class="added-time-badge" id="added-time-badge" style="display:none">⏱ Tiempo añadido</div>
       </div>
+
       <div class="team">
-        <div class="logo-wrap"><img id="away-logo" src="" alt=""></div>
+        <div class="logo-wrap" id="away-logo-wrap"><img id="away-logo" src="" alt="" onerror="this.style.opacity=0"></div>
         <div class="team-name" id="away-name">–</div>
       </div>
     </div>
+
+    <!-- Scorers & cards row -->
+    <div class="events-row" id="events-row" style="display:none">
+      <div class="events-col" id="home-events"></div>
+      <div class="events-col right" id="away-events"></div>
+    </div>
+
     <div class="divider"></div>
+
     <div class="stats">
       <div class="stat-row">
         <div class="sv h" id="poss-h">–</div>
@@ -124,6 +301,8 @@ html, body {
       </div>
     </div>
   </div>
+
+  <!-- Upcoming view -->
   <div id="upcoming-view" style="display:none; width:100%;">
     <div class="upcoming-mode">
       <div class="upcoming-header">Próximos partidos hoy</div>
@@ -131,181 +310,249 @@ html, body {
       <div class="countdown" id="countdown"></div>
     </div>
   </div>
+
   <button class="refresh-btn" id="refresh-btn" onclick="handleRefresh()">↻ ACTUALIZAR</button>
   <div class="footer" id="footer">Pulsa actualizar para cargar datos</div>
 </div>
 
 <script>
+// ─── State ────────────────────────────────────────────
+let prevHomeScore = null;
+let prevAwayScore = null;
+let autoInterval = null;
+
+// ─── Helpers ─────────────────────────────────────────
 function set(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = (val !== null && val !== undefined) ? val : '–';
 }
+
 function setBar(id, h, a) {
   const ph = parseFloat(h) || 0, pa = parseFloat(a) || 0;
   const el = document.getElementById(id);
   if (el) el.style.width = Math.round(ph / (ph + pa || 1) * 100) + '%';
 }
-function sportEmoji(sport) {
-  return { football:'⚽', tennis:'🎾', basketball:'🏀', hockey:'🏒' }[sport] || '🏅';
-}
+
 function timeUntil(ts) {
   const diff = ts * 1000 - Date.now();
   if (diff <= 0) return 'Comenzando...';
   const h = Math.floor(diff / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
-  return h > 0 ? `En ${h}h ${m}m` : `En ${m} minutos`;
+  if (h > 0) return `En ${h}h ${m}m`;
+  return `En ${m} minutos`;
 }
 
-// ── Reloj interpolado ──────────────────────────────────────────
-let clockState = null;
-let clockInterval = null;
+// ─── Goal animation ───────────────────────────────────
+function triggerGoalAnimation() {
+  const scoreEl = document.getElementById('score-display');
+  scoreEl.classList.remove('goal-anim');
+  void scoreEl.offsetWidth; // reflow
+  scoreEl.classList.add('goal-anim');
 
-function startClock(m) {
-  if (clockInterval) clearInterval(clockInterval);
-  const clock    = document.getElementById('clock');
-  const clockDot = document.getElementById('clock-dot');
+  const flash = document.createElement('div');
+  flash.className = 'goal-flash';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 1000);
 
-  if (!m.isLive || m.isHalfTime) {
-    // Partido no en juego: mostrar texto estático
-    const label = m.isHalfTime
-      ? 'DESCANSO'
-      : (m.statusLong || m.minute || m.status || '–');
-    clock.textContent = label;
-    clock.classList.add('static');
-    clockDot.style.display = 'none';
-    return;
-  }
-
-  clock.classList.remove('static');
-  clockDot.style.display = 'block';
-
-  if (m.periodStart) {
-    // Modo preciso: calculamos desde el timestamp de inicio del período.
-    // No depende de sincronía entre relojes de servidor y cliente.
-    const periodOffsetMin = m.period === 2 ? 45 : (m.period === 3 ? 90 : (m.period === 4 ? 105 : 0));
-    clockState = { periodStart: m.periodStart, periodOffsetMin };
-  } else if (m.minuteNum !== null) {
-    // Modo aproximado: minuto conocido + tiempo transcurrido desde que el cliente recibió los datos
-    clockState = { minuteNum: m.minuteNum, receivedAt: Date.now() };
-  } else {
-    // Sin información de tiempo
-    clock.textContent = m.statusLong || m.status || '–';
-    clock.classList.add('static');
-    clockDot.style.display = 'none';
-    return;
-  }
-
-  function tick() {
-    if (!clockState) return;
-    let total;
-    if (clockState.periodStart !== undefined) {
-      const secondsInPeriod = Math.floor(Date.now() / 1000) - clockState.periodStart;
-      total = clockState.periodOffsetMin * 60 + Math.max(0, secondsInPeriod);
-    } else {
-      const elapsed = Math.floor((Date.now() - clockState.receivedAt) / 1000);
-      total = clockState.minuteNum * 60 + elapsed;
+  // Also animate the logo of the scoring team (can't know which, animate both briefly)
+  ['home-logo-wrap', 'away-logo-wrap'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.transform = 'scale(1.15)';
+      setTimeout(() => el.style.transform = '', 500);
     }
-    const mins = Math.min(Math.floor(total / 60), 99);
-    const secs = total % 60;
-    clock.textContent = `${mins}'${String(secs).padStart(2,'0')}`;
-  }
-  tick();
-  clockInterval = setInterval(tick, 1000);
+  });
 }
 
-function renderUpcoming(upcoming) {
+// ─── Events render ────────────────────────────────────
+function renderEvents(goals, yellowCards, colId) {
+  const col = document.getElementById(colId);
+  if (!col) return;
+  col.innerHTML = '';
+
+  goals.forEach(g => {
+    const icon = g.type === 'og' ? '⚽🔴' : g.type === 'pen' ? '⚽(P)' : '⚽';
+    const badge = g.type === 'og' ? '<span class="event-badge">PP</span>' : g.type === 'pen' ? '<span class="event-badge">PEN</span>' : '';
+    col.innerHTML += `
+      <div class="event-item">
+        <span class="event-min">${g.minute}'</span>
+        <span class="event-icon">${icon}</span>
+        <span class="event-name">${g.player}</span>${badge}
+      </div>`;
+  });
+
+  yellowCards.forEach(y => {
+    col.innerHTML += `
+      <div class="event-item">
+        <span class="event-min">${y.minute}'</span>
+        <span class="event-icon">🟨</span>
+        <span class="event-name">${y.player}</span>
+      </div>`;
+  });
+}
+
+// ─── Upcoming render (grouped by competition) ──────────
+function renderUpcoming(grouped) {
   const list = document.getElementById('upcoming-list');
-  if (!upcoming || upcoming.length === 0) {
+  if (!grouped || Object.keys(grouped).length === 0) {
     list.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.3);font-size:0.8rem;padding:20px 0">No hay más partidos programados hoy</div>';
     return;
   }
-  list.innerHTML = upcoming.map(u => `
-    <div class="upcoming-item">
-      <div class="up-time">${u.time}</div>
-      <div class="up-match">
-        <div class="up-team">
-          <div class="up-logo"><img src="${u.homeLogo||''}" onerror="this.style.opacity=0"></div>
-          <div class="up-tname">${u.home}</div>
-        </div>
-        <div class="up-center">
-          <div class="up-vs">VS</div>
-          <div class="up-league">${u.league}</div>
-        </div>
-        <div class="up-team">
-          <div class="up-logo"><img src="${u.awayLogo||''}" onerror="this.style.opacity=0"></div>
-          <div class="up-tname">${u.away}</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  if (upcoming[0]?.timestamp) set('countdown', timeUntil(upcoming[0].timestamp));
+
+  let html = '';
+  let firstTimestamp = null;
+
+  for (const [compName, compData] of Object.entries(grouped)) {
+    html += `<div class="comp-group">
+      <div class="comp-header">
+        <img class="comp-logo" src="${compData.logo || ''}" onerror="this.style.display='none'">
+        <span class="comp-name">${compName}</span>
+      </div>`;
+
+    compData.matches.forEach(u => {
+      if (!firstTimestamp) firstTimestamp = u.timestamp;
+      html += `
+        <div class="upcoming-item">
+          <div class="up-time">${u.time}</div>
+          <div class="up-match">
+            <div class="up-team">
+              <div class="up-logo"><img src="${u.homeLogo || ''}" onerror="this.style.opacity=0"></div>
+              <div class="up-tname">${u.home}</div>
+            </div>
+            <div class="up-center">
+              <div class="up-vs">VS</div>
+            </div>
+            <div class="up-team">
+              <div class="up-logo"><img src="${u.awayLogo || ''}" onerror="this.style.opacity=0"></div>
+              <div class="up-tname">${u.away}</div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    html += '</div>';
+  }
+
+  list.innerHTML = html;
+
+  if (firstTimestamp) {
+    set('countdown', timeUntil(firstTimestamp));
+  }
 }
 
+// ─── Main fetch ───────────────────────────────────────
 async function fetchMatch() {
   try {
-    const res  = await fetch('/api/match');
+    const res = await fetch('/api/match');
     const data = await res.json();
+
     if (data.error) { set('league-name', 'Error'); set('footer', data.error); return; }
+
     if (!data.match) {
-      if (clockInterval) clearInterval(clockInterval);
       document.getElementById('ldot').classList.add('off');
       set('league-name', 'Sin partidos en vivo');
-      document.getElementById('live-view').style.display     = 'none';
+      document.getElementById('live-view').style.display = 'none';
       document.getElementById('upcoming-view').style.display = 'block';
+      document.getElementById('var-banner').style.display = 'none';
       renderUpcoming(data.upcoming);
       set('footer', 'Actualizado: ' + new Date().toLocaleTimeString('es-ES'));
       return;
     }
+
     const m = data.match;
+
+    // League / badge
     document.getElementById('ldot').classList.remove('off');
     set('league-name', m.league);
     const badge = document.getElementById('sport-badge');
     badge.style.display = 'inline-block';
-    badge.textContent = sportEmoji(m.sport) + ' ' + m.sport.toUpperCase();
-    document.getElementById('live-view').style.display     = 'flex';
+    badge.textContent = '⚽ FÚTBOL';
+
+    document.getElementById('live-view').style.display = 'flex';
     document.getElementById('upcoming-view').style.display = 'none';
 
-    // Logos via proxy
-    const homeLogoEl = document.getElementById('home-logo');
-    const awayLogoEl = document.getElementById('away-logo');
-    if (m.home.logo) {
-      homeLogoEl.onerror = function() { this.style.display = 'none'; };
-      homeLogoEl.onload  = function() { this.style.display = ''; this.style.opacity = 1; };
-      homeLogoEl.style.display = '';
-      homeLogoEl.src = m.home.logo;
+    // Logos & names
+    document.getElementById('home-logo').src = m.home.logo || '';
+    document.getElementById('away-logo').src = m.away.logo || '';
+    set('home-name', m.home.name);
+    set('away-name', m.away.name);
+
+    // Goal detection → animation
+    const newHomeScore = m.home.score;
+    const newAwayScore = m.away.score;
+    if (prevHomeScore !== null && prevAwayScore !== null) {
+      if (newHomeScore > prevHomeScore || newAwayScore > prevAwayScore) {
+        triggerGoalAnimation();
+      }
     }
-    if (m.away.logo) {
-      awayLogoEl.onerror = function() { this.style.display = 'none'; };
-      awayLogoEl.onload  = function() { this.style.display = ''; this.style.opacity = 1; };
-      awayLogoEl.style.display = '';
-      awayLogoEl.src = m.away.logo;
+    prevHomeScore = newHomeScore;
+    prevAwayScore = newAwayScore;
+
+    set('home-score', newHomeScore);
+    set('away-score', newAwayScore);
+
+    // Clock + added time
+    const clock = document.getElementById('clock');
+    const addedBadge = document.getElementById('added-time-badge');
+
+    if (m.isLive && m.minute) {
+      clock.textContent = m.minute;
+      clock.classList.remove('static');
+      clock.classList.toggle('added-time', m.addedTime > 0);
+      document.getElementById('clock-dot').style.display = 'block';
+      if (m.addedTime > 0) {
+        addedBadge.style.display = 'inline-block';
+      } else {
+        addedBadge.style.display = 'none';
+      }
+    } else {
+      clock.textContent = m.statusLong || m.status;
+      clock.classList.add('static');
+      clock.classList.remove('added-time');
+      document.getElementById('clock-dot').style.display = 'none';
+      addedBadge.style.display = 'none';
     }
 
-    set('home-name',  m.home.name);
-    set('away-name',  m.away.name);
-    set('home-score', m.home.score);
-    set('away-score', m.away.score);
+    // VAR banner
+    const varBanner = document.getElementById('var-banner');
+    if (m.varReview) {
+      varBanner.style.display = 'flex';
+      set('var-text', `📹 Revisión VAR: ${m.varReview.detail}${m.varReview.team ? ' — ' + m.varReview.team : ''}`);
+    } else {
+      varBanner.style.display = 'none';
+    }
 
-    startClock(m);
+    // Events (scorers + yellow cards)
+    const hasEvents =
+      (m.home.goals && m.home.goals.length > 0) ||
+      (m.away.goals && m.away.goals.length > 0) ||
+      (m.home.yellowCards && m.home.yellowCards.length > 0) ||
+      (m.away.yellowCards && m.away.yellowCards.length > 0);
 
-    const s = m.stats || {};
-    set('poss-h',    s.possessionHome); set('poss-a',    s.possessionAway);
-    set('shots-h',   s.shotsHome);      set('shots-a',   s.shotsAway);
-    set('fouls-h',   s.foulsHome);      set('fouls-a',   s.foulsAway);
-    set('corners-h', s.cornersHome);    set('corners-a', s.cornersAway);
-    set('yellow-h',  s.yellowHome);     set('yellow-a',  s.yellowAway);
+    document.getElementById('events-row').style.display = hasEvents ? 'grid' : 'none';
+    renderEvents(m.home.goals || [], m.home.yellowCards || [], 'home-events');
+    renderEvents(m.away.goals || [], m.away.yellowCards || [], 'away-events');
 
-    const ph = parseFloat(s.possessionHome);
-    document.getElementById('bar-poss').style.width = (isNaN(ph) ? 50 : ph) + '%';
-    setBar('bar-shots',   s.shotsHome,   s.shotsAway);
-    setBar('bar-fouls',   s.foulsHome,   s.foulsAway);
+    // Stats
+    const s = m.stats;
+    set('poss-h', s.possessionHome); set('poss-a', s.possessionAway);
+    set('shots-h', s.shotsHome);     set('shots-a', s.shotsAway);
+    set('fouls-h', s.foulsHome);     set('fouls-a', s.foulsAway);
+    set('corners-h', s.cornersHome); set('corners-a', s.cornersAway);
+    set('yellow-h', s.yellowHome);   set('yellow-a', s.yellowAway);
+
+    const ph = parseFloat(s.possessionHome) || 50;
+    document.getElementById('bar-poss').style.width = ph + '%';
+    setBar('bar-shots', s.shotsHome, s.shotsAway);
+    setBar('bar-fouls', s.foulsHome, s.foulsAway);
     setBar('bar-corners', s.cornersHome, s.cornersAway);
-    setBar('bar-yellow',  s.yellowHome,  s.yellowAway);
+    setBar('bar-yellow', s.yellowHome, s.yellowAway);
 
     const liveCount = data.totalLive > 1 ? ` · ${data.totalLive} en vivo` : '';
-    set('footer', `Actualizado: ${new Date(m.updated).toLocaleTimeString('es-ES')}${liveCount}`);
-  } catch (err) {
-    set('footer', 'Error de red: ' + err.message);
+    set('footer', `Actualizado: ${new Date().toLocaleTimeString('es-ES')}${liveCount}`);
+
+  } catch (e) {
+    set('footer', 'Error de red: ' + e.message);
   }
 }
 
@@ -318,7 +565,10 @@ async function handleRefresh() {
   btn.textContent = '↻ ACTUALIZAR';
 }
 
+// Auto-refresh every 30s
 fetchMatch();
+autoInterval = setInterval(fetchMatch, 30000);
 </script>
+
 </body>
 </html>
