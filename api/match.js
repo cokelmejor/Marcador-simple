@@ -1,216 +1,178 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  // ── Proxy de logos ──────────────────────────────────────────────
-  // El navegador no puede pedir imágenes a api.sofascore.app (CORS),
-  // pero el servidor sí puede. Las servimos desde /api/match?logo=…
-  if (req.method === 'GET' && req.query.logo) {
-    try {
-      const imgRes = await fetch(req.query.logo, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Referer': 'https://www.sofascore.com/',
-          'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8'
-        }
-      });
-      if (!imgRes.ok) return res.status(404).end();
-      const buf = await imgRes.arrayBuffer();
-      res.setHeader('Content-Type', imgRes.headers.get('content-type') || 'image/png');
-      res.setHeader('Cache-Control', 'public, max-age=3600');
-      return res.status(200).send(Buffer.from(buf));
-    } catch {
-      return res.status(502).end();
-    }
-  }
+  const KEY = process.env.RAPIDAPI_KEY;
+  if (!KEY) return res.status(500).json({ error: 'API key no configurada' });
 
-  const key = process.env.RAPIDAPI_KEY;
-  if (!key) {
-    return res.status(500).json({ error: 'RAPIDAPI_KEY no configurada en Vercel' });
-  }
-
-  const HEADERS = {
-    'x-rapidapi-key': key,
-    'x-rapidapi-host': 'sportapi7.p.rapidapi.com',
-    'Content-Type': 'application/json'
+  const headers = {
+    'x-rapidapi-key': KEY,
+    'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
   };
 
-  // Helper: sirve logos a través del proxy para evitar bloqueos CORS
-  function proxyLogo(url) {
-    if (!url) return null;
-    return `/api/match?logo=${encodeURIComponent(url)}`;
-  }
-
-  const SPORTS = ['football', 'tennis', 'basketball'];
-
   try {
-    // 1. Buscar partidos en vivo
-    let liveEvent = null;
-    let totalLive = 0;
+    // --- 1. Fetch live fixtures ---
+    const liveRes = await fetch('https://api-football-v1.p.rapidapi.com/v3/fixtures?live=all', { headers });
+    const liveData = await liveRes.json();
+    const liveFixtures = liveData.response || [];
 
-    for (const sport of SPORTS) {
-      const r = await fetch(
-        `https://sportapi7.p.rapidapi.com/api/v1/sport/${sport}/events/live`,
-        { headers: HEADERS }
-      );
-      const d = await r.json();
-      const events = d.events || [];
-      if (events.length > 0 && !liveEvent) {
-        liveEvent = { event: events[0], sport };
+    if (liveFixtures.length > 0) {
+      // Take first live match
+      const fixture = liveFixtures[0];
+      const fixtureId = fixture.fixture.id;
+
+      // --- 2. Fetch events for scorers, cards, VAR ---
+      const eventsRes = await fetch(`https://api-football-v1.p.rapidapi.com/v3/fixtures/events?fixture=${fixtureId}`, { headers });
+      const eventsData = await eventsRes.json();
+      const events = eventsData.response || [];
+
+      // --- 3. Fetch stats ---
+      const statsRes = await fetch(`https://api-football-v1.p.rapidapi.com/v3/fixtures/statistics?fixture=${fixtureId}`, { headers });
+      const statsData = await statsRes.json();
+      const statsArr = statsData.response || [];
+
+      const getStatVal = (team, type) => {
+        const t = statsArr.find(s => s.team.id === team);
+        if (!t) return null;
+        const st = t.statistics.find(s => s.type === type);
+        return st ? st.value : null;
+      };
+
+      const homeId = fixture.teams.home.id;
+      const awayId = fixture.teams.away.id;
+
+      // --- 4. Parse events ---
+      const goals = events.filter(e => e.type === 'Goal' && e.detail !== 'Missed Penalty');
+      const yellowCards = events.filter(e => e.type === 'Card' && e.detail === 'Yellow Card');
+      const redCards = events.filter(e => e.type === 'Card' && (e.detail === 'Red Card' || e.detail === 'Yellow Red Card'));
+      const varEvents = events.filter(e => e.type === 'Var');
+
+      // Check if VAR review is currently active (last event is a VAR challenge not yet resolved)
+      const lastEvent = events[events.length - 1];
+      const varActive = lastEvent && lastEvent.type === 'Var' &&
+        (lastEvent.detail === 'Goal cancelled' ? false : lastEvent.detail.includes('VAR') || lastEvent.detail.includes('Challenge'));
+
+      // --- 5. Added time detection ---
+      const elapsed = fixture.fixture.status.elapsed || 0;
+      const extra = fixture.fixture.status.extra || null;
+      const statusShort = fixture.fixture.status.short;
+
+      // Detect added time phase
+      let addedTime = null;
+      if (statusShort === '1H' && elapsed >= 45) {
+        addedTime = extra || (elapsed - 45);
+      } else if (statusShort === '2H' && elapsed >= 90) {
+        addedTime = extra || (elapsed - 90);
       }
-      totalLive += events.length;
+
+      // Format minute display
+      let minuteDisplay;
+      if (addedTime !== null && addedTime > 0) {
+        const base = statusShort === '1H' ? 45 : 90;
+        minuteDisplay = `${base}+${addedTime}'`;
+      } else {
+        minuteDisplay = elapsed ? `${elapsed}'` : null;
+      }
+
+      // --- 6. Format scorers ---
+      const formatGoals = (teamId) =>
+        goals
+          .filter(e => e.team.id === teamId)
+          .map(e => ({
+            player: e.player?.name || 'Desconocido',
+            minute: e.time.elapsed + (e.time.extra ? `+${e.time.extra}` : ''),
+            type: e.detail === 'Own Goal' ? 'og' : e.detail === 'Penalty' ? 'pen' : 'goal'
+          }));
+
+      const formatYellows = (teamId) =>
+        yellowCards
+          .filter(e => e.team.id === teamId)
+          .map(e => ({
+            player: e.player?.name || 'Desconocido',
+            minute: e.time.elapsed + (e.time.extra ? `+${e.time.extra}` : '')
+          }));
+
+      // --- 7. VAR review status ---
+      const currentVarReview = varActive && lastEvent ? {
+        detail: lastEvent.detail,
+        team: lastEvent.team?.name
+      } : null;
+
+      return res.json({
+        match: {
+          id: fixtureId,
+          league: fixture.league.name,
+          sport: 'football',
+          isLive: true,
+          status: statusShort,
+          statusLong: fixture.fixture.status.long,
+          minute: minuteDisplay,
+          minuteRaw: elapsed,
+          addedTime: addedTime,
+          updated: fixture.fixture.date,
+          home: {
+            id: homeId,
+            name: fixture.teams.home.name,
+            logo: fixture.teams.home.logo,
+            score: fixture.goals.home ?? 0,
+            goals: formatGoals(homeId),
+            yellowCards: formatYellows(homeId)
+          },
+          away: {
+            id: awayId,
+            name: fixture.teams.away.name,
+            logo: fixture.teams.away.logo,
+            score: fixture.goals.away ?? 0,
+            goals: formatGoals(awayId),
+            yellowCards: formatYellows(awayId)
+          },
+          varReview: currentVarReview,
+          stats: {
+            possessionHome: getStatVal(homeId, 'Ball Possession'),
+            possessionAway: getStatVal(awayId, 'Ball Possession'),
+            shotsHome: getStatVal(homeId, 'Shots on Goal'),
+            shotsAway: getStatVal(awayId, 'Shots on Goal'),
+            foulsHome: getStatVal(homeId, 'Fouls'),
+            foulsAway: getStatVal(awayId, 'Fouls'),
+            cornersHome: getStatVal(homeId, 'Corner Kicks'),
+            cornersAway: getStatVal(awayId, 'Corner Kicks'),
+            yellowHome: getStatVal(homeId, 'Yellow Cards'),
+            yellowAway: getStatVal(awayId, 'Yellow Cards')
+          }
+        },
+        totalLive: liveFixtures.length
+      });
     }
 
-    // 2. Próximos partidos de hoy (fútbol)
-    const today = new Date().toISOString().split('T')[0];
+    // --- No live matches: fetch upcoming grouped by competition ---
+    const todayStr = new Date().toISOString().split('T')[0];
     const upcomingRes = await fetch(
-      `https://sportapi7.p.rapidapi.com/api/v1/sport/football/scheduled-events/${today}/inverse`,
-      { headers: HEADERS }
+      `https://api-football-v1.p.rapidapi.com/v3/fixtures?date=${todayStr}&status=NS`,
+      { headers }
     );
     const upcomingData = await upcomingRes.json();
-    const allToday = upcomingData.events || [];
+    const upcomingRaw = (upcomingData.response || [])
+      .sort((a, b) => a.fixture.timestamp - b.fixture.timestamp);
 
-    const upcoming = allToday
-      .filter(e => e.status?.type === 'notstarted')
-      .slice(0, 5)
-      .map(e => ({
-        id:        e.id,
-        sport:     'football',
-        league:    e.tournament?.name || e.tournament?.uniqueTournament?.name || '–',
-        home:      e.homeTeam?.name || '–',
-        away:      e.awayTeam?.name || '–',
-        homeLogo:  proxyLogo(e.homeTeam?.id ? `https://api.sofascore.app/api/v1/team/${e.homeTeam.id}/image` : null),
-        awayLogo:  proxyLogo(e.awayTeam?.id ? `https://api.sofascore.app/api/v1/team/${e.awayTeam.id}/image` : null),
-        time:      e.startTimestamp
-          ? new Date(e.startTimestamp * 1000).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-          : '–',
-        timestamp: e.startTimestamp || null
-      }));
-
-    if (!liveEvent) {
-      return res.status(200).json({ match: null, message: 'Sin partidos en vivo', upcoming, totalLive: 0 });
+    // Group by competition
+    const grouped = {};
+    for (const u of upcomingRaw) {
+      const leagueKey = `${u.league.country} — ${u.league.name}`;
+      if (!grouped[leagueKey]) grouped[leagueKey] = { logo: u.league.logo, matches: [] };
+      grouped[leagueKey].matches.push({
+        home: u.teams.home.name,
+        homeLogo: u.teams.home.logo,
+        away: u.teams.away.name,
+        awayLogo: u.teams.away.logo,
+        timestamp: u.fixture.timestamp,
+        time: new Date(u.fixture.timestamp * 1000).toLocaleTimeString('es-ES', {
+          hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid'
+        })
+      });
     }
 
-    const e = liveEvent.event;
-    const homeTeam   = e.homeTeam  || {};
-    const awayTeam   = e.awayTeam  || {};
-    const homeScore  = e.homeScore || {};
-    const awayScore  = e.awayScore || {};
-    const status     = e.status    || {};
-    const tournament = e.tournament || {};
+    return res.json({ match: null, upcoming: grouped });
 
-    // 3. Obtener estadísticas del partido en vivo
-    let stats = {
-      possessionHome: null, possessionAway: null,
-      shotsHome: null,      shotsAway: null,
-      foulsHome: null,      foulsAway: null,
-      cornersHome: null,    cornersAway: null,
-      yellowHome: null,     yellowAway: null,
-    };
-
-    try {
-      const statsRes = await fetch(
-        `https://sportapi7.p.rapidapi.com/api/v1/event/${e.id}/statistics`,
-        { headers: HEADERS }
-      );
-      const statsData = await statsRes.json();
-
-      // Prefer the "ALL" period; fall back to the last or first available
-      const allPeriods = statsData.statistics || [];
-      const period =
-        allPeriods.find(p => (p.period || '').toUpperCase() === 'ALL') ||
-        allPeriods[allPeriods.length - 1] ||
-        allPeriods[0];
-      const groups = period?.groups || [];
-
-      function findStat(groups, ...names) {
-        for (const g of groups) {
-          for (const item of g.statisticsItems || []) {
-            const n = (item.name || '').toLowerCase();
-            if (names.some(name => n.includes(name.toLowerCase()))) {
-              return { home: item.home ?? null, away: item.away ?? null };
-            }
-          }
-        }
-        return { home: null, away: null };
-      }
-
-      const poss    = findStat(groups, 'Ball possession', 'possession');
-      const shots   = findStat(groups, 'Shots on target', 'on target');
-      const fouls   = findStat(groups, 'Fouls');
-      const corners = findStat(groups, 'Corner kicks', 'corners');
-      const yellow  = findStat(groups, 'Yellow cards');
-
-      stats = {
-        possessionHome: poss.home,    possessionAway: poss.away,
-        shotsHome:      shots.home,   shotsAway:      shots.away,
-        foulsHome:      fouls.home,   foulsAway:      fouls.away,
-        cornersHome:    corners.home, cornersAway:    corners.away,
-        yellowHome:     yellow.home,  yellowAway:     yellow.away,
-      };
-    } catch (statsErr) {
-      // Si las stats fallan, seguimos sin ellas
-      console.error('Stats fetch failed:', statsErr.message);
-    }
-
-    // 4. Extraer minuto numérico para que el frontend pueda interpolar
-    let minuteRaw = status.description || null;
-    let minuteNum = null;
-
-    // Only extract minute if description looks like a game time ("23'", "45+2'", "90")
-    // Avoid extracting "1" from "1st Half" etc.
-    if (minuteRaw) {
-      const mm = minuteRaw.match(/^(\d+)(?:\+\d+)?[''']?$/);
-      if (mm) minuteNum = parseInt(mm[1], 10);
-    }
-
-    // Fallback: calculate from period start timestamp (most accurate)
-    const periodStart = e.time?.currentPeriodStartTimestamp || null;
-    const periodNum   = e.time?.period || null;
-
-    // If we still don't have minuteNum, try e.time.played (seconds)
-    if (minuteNum === null && e.time?.played !== undefined) {
-      minuteNum = Math.floor(e.time.played / 60);
-    }
-
-    res.status(200).json({
-      match: {
-        id:         e.id,
-        sport:      liveEvent.sport,
-        league:     tournament.name || tournament.uniqueTournament?.name || '–',
-        leagueLogo: proxyLogo(tournament.uniqueTournament?.id
-          ? `https://api.sofascore.app/api/v1/unique-tournament/${tournament.uniqueTournament.id}/image`
-          : null),
-        minute:      minuteRaw,
-        minuteNum:   minuteNum,       // número puro para interpolar el reloj
-        periodStart: periodStart,     // Unix timestamp (s) inicio del período actual
-        period:      periodNum,       // 1 = primera parte, 2 = segunda, etc.
-        status:      status.type || '–',
-        statusLong:  status.description || status.type || '–',
-        isLive:      ['inprogress', 'live', '1h', '2h', 'overtime', 'ext'].includes(
-                       (status.type || '').toLowerCase()
-                     ),
-        isHalfTime:  ['halftime', 'pause', 'ht'].includes(
-                       (status.type || '').toLowerCase()
-                     ),
-        home: {
-          name:  homeTeam.name || homeTeam.shortName || '–',
-          logo:  proxyLogo(homeTeam.id ? `https://api.sofascore.app/api/v1/team/${homeTeam.id}/image` : null),
-          score: homeScore.current ?? homeScore.display ?? 0,
-        },
-        away: {
-          name:  awayTeam.name || awayTeam.shortName || '–',
-          logo:  proxyLogo(awayTeam.id ? `https://api.sofascore.app/api/v1/team/${awayTeam.id}/image` : null),
-          score: awayScore.current ?? awayScore.display ?? 0,
-        },
-        stats,
-        updated:   new Date().toISOString(),
-        updatedTs: Date.now()        // timestamp para sincronizar el reloj interpolado
-      },
-      totalLive,
-      upcoming
-    });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (e) {
+    return res.status(500).json({ error: 'Error interno: ' + e.message });
   }
 }
